@@ -1,0 +1,14 @@
+.git/
+node_modules/
+cypress/
+ci/
+.angular/
+angular.json
+cypress.config.ts
+tsconfig.*
+.vscode/
+package-lock.json
+package.json
+proxy.dev.json
+proxy.dev.local-server.json
+README.md
