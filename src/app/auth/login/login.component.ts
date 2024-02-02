@@ -6,6 +6,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -28,7 +29,7 @@ export class LoginComponent {
     password: this.formBuilder.control(null as string | null, Validators.required),
   });
 
-  constructor(private authService: AuthService, private formBuilder: FormBuilder) {}
+  constructor(public router: Router, private authService: AuthService, private formBuilder: FormBuilder) {}
 
   login(): void {
     if (this.loginForm.valid) {

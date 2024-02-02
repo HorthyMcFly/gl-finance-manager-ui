@@ -1,16 +1,27 @@
-<mat-card>
-  <mat-card-header>
-    <div>Bejelentkezés</div>
-  </mat-card-header>
-  <mat-card-content>
-    <form [formGroup]="loginForm" (ngSubmit)="login()">
-      <mat-form-field>
-        <input matInput formControlName="username" />
-      </mat-form-field>
-      <mat-form-field>
-        <input matInput formControlName="password" />
-      </mat-form-field>
-      <button mat-raised-button type="submit">Bejelentkezés</button>
-    </form>
-  </mat-card-content>
-</mat-card>
+<div class="flex items-center h-full">
+  <mat-card class="w-64 mx-auto">
+    <mat-card-header class="justify-center">
+      <mat-card-title>Bejelentkezés</mat-card-title>
+    </mat-card-header>
+    <mat-card-content class="m-3">
+      <form [formGroup]="loginForm" (ngSubmit)="login()" class="flex flex-col justify-center">
+        <mat-form-field>
+          <input matInput formControlName="username" />
+        </mat-form-field>
+        <mat-form-field>
+          <input matInput formControlName="password" />
+        </mat-form-field>
+        <button mat-raised-button type="submit" color="primary" class="mx-auto w-32">Bejelentkezés</button>
+        <button
+          mat-raised-button
+          type="button"
+          color="accent"
+          class="mx-auto w-32 mt-2"
+          (click)="router.navigate(['register'])"
+        >
+          Regisztráció
+        </button>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>
