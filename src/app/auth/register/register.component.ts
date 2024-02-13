@@ -7,6 +7,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { Router } from '@angular/router';
 import { AuthService } from '../auth.service';
+import { first, switchMap } from 'rxjs';
 
 @Component({
   selector: 'app-register',
@@ -25,7 +26,6 @@ import { AuthService } from '../auth.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RegisterComponent {
-
   registerForm = this.formBuilder.group({
     username: this.formBuilder.control(null as string | null, Validators.required),
     password: this.formBuilder.control(null as string | null, Validators.required),
@@ -37,10 +37,18 @@ export class RegisterComponent {
   register(): void {
     if (this.registerForm.valid) {
       const formValue = this.registerForm.getRawValue();
-      this.authService.register(formValue.username!, formValue.password!).subscribe((response) => {
-        console.log(response);
-      });
+      this.authService
+        .register(formValue.username!, formValue.password!)
+        .pipe(
+          switchMap(() => {
+            return this.authService.login(formValue.username!, formValue.password!);
+          }),
+          first()
+        )
+        .subscribe((loginResponse) => {
+          sessionStorage.setItem('loggedInUser', loginResponse.accessToken);
+          this.router.navigate(['dashboard']);
+        });
     }
   }
-
 }

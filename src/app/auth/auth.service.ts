@@ -12,18 +12,18 @@ export class AuthService {
     return sessionStorage.getItem('app.token') != null;
   }
 
-  login(username: string, password: string): Observable<string> {
+  // TODO: use swagger
+  login(username: string, password: string): Observable<{ username: string, accessToken: string}> {
     const httpOptions = {
       headers: {
         Authorization: 'Basic ' + window.btoa(username + ':' + password),
-      },
-      responseType: 'text' as 'text',
+      }
     };
-    return this.http.post('/api/auth/login', null, httpOptions);
+    return this.http.post<{ username: string, accessToken: string}>('/api/auth/login', null, httpOptions);
   }
 
-  register(username: string, password: string): Observable<string> {
-    return this.http.post<any>('/api/auth/register', { username, password });
+  register(username: string, password: string): Observable<never> {
+    return this.http.post<never>('/api/auth/register', { username, password });
   }
 
   logout() {

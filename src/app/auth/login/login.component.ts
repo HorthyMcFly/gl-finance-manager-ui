@@ -36,7 +36,8 @@ export class LoginComponent {
     if (this.loginForm.valid) {
       const formValue = this.loginForm.getRawValue();
       this.authService.login(formValue.username!, formValue.password!).subscribe((response) => {
-        console.log(response);
+        sessionStorage.setItem("loggedInUser", response.accessToken);
+        this.router.navigate(['dashboard']);
       });
     }
   }
