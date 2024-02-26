@@ -1,39 +1,39 @@
 import { Injectable } from '@angular/core';
-import {
-  HttpRequest,
-  HttpHandler,
-  HttpEvent,
-  HttpInterceptor,
-  HttpErrorResponse
-} from '@angular/common/http';
-import { Observable, catchError, throwError } from 'rxjs';
+import { HttpRequest, HttpHandler, HttpEvent, HttpInterceptor, HttpErrorResponse } from '@angular/common/http';
+import { Observable, catchError, switchMap, throwError } from 'rxjs';
 import { Router } from '@angular/router';
+import { LoginResponse } from '../../models/Api';
+import { AuthService } from './auth.service';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
-
-  constructor(private router: Router) {
-  }
+  constructor(private authService: AuthService, private router: Router) {}
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-      let token = sessionStorage.getItem("loggedInUser");
-      if (token) {
-          request = request.clone({
+    if (request.url.includes('login')) {
+      return next.handle(request).pipe(catchError((error: HttpErrorResponse) => this.handleErrorRes(error)));
+    }
+    return this.authService.loggedInUser$
+      .pipe(
+        switchMap((loggedInUser) => {
+          if (loggedInUser?.accessToken) {
+            request = request.clone({
               setHeaders: {
-                  Authorization: `Bearer ${token}`
+                Authorization: `Bearer ${loggedInUser?.accessToken}`,
               },
-          });
-      }
-
-      return next.handle(request).pipe(
-          catchError((error: HttpErrorResponse) => this.handleErrorRes(error))
-      );
+            });
+          }
+          return next.handle(request);
+        })
+      )
+      .pipe(catchError((error: HttpErrorResponse) => this.handleErrorRes(error)));
   }
 
   private handleErrorRes(error: HttpErrorResponse): Observable<never> {
-      if (error.status === 401) {
-          this.router.navigateByUrl("/login", {replaceUrl: true});
-      }
-      return throwError(() => error);
+    if (error.status === 401) {
+      this.authService.setLoggedInUser(null);
+      this.router.navigateByUrl('/login', { replaceUrl: true });
+    }
+    return throwError(() => error);
   }
 }

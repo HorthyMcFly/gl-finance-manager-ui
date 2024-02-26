@@ -1,13 +1,20 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
-import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  FormBuilder,
+  FormsModule,
+  ReactiveFormsModule,
+  ValidationErrors,
+  Validators,
+} from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { Router } from '@angular/router';
 import { AuthService } from '../auth.service';
-import { first, switchMap } from 'rxjs';
+import { Observable, first, map, startWith, switchMap } from 'rxjs';
 
 @Component({
   selector: 'app-register',
@@ -25,14 +32,31 @@ import { first, switchMap } from 'rxjs';
   styleUrls: ['./register.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class RegisterComponent {
-  registerForm = this.formBuilder.group({
-    username: this.formBuilder.control(null as string | null, Validators.required),
-    password: this.formBuilder.control(null as string | null, Validators.required),
-    confirmPassword: this.formBuilder.control(null as string | null, Validators.required),
-  });
+export class RegisterComponent implements OnInit {
+  registerForm = this.formBuilder.group(
+    {
+      username: this.formBuilder.control(null as string | null, Validators.required),
+      password: this.formBuilder.control(null as string | null, Validators.required),
+      confirmPassword: this.formBuilder.control(null as string | null, Validators.required),
+    },
+    { validators: this.passwordMatchValidator }
+  );
+
+  confirmPasswordErrorMessage$!: Observable<string | null>;
 
   constructor(public router: Router, private authService: AuthService, private formBuilder: FormBuilder) {}
+
+  ngOnInit(): void {
+    const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser') ?? 'null');
+    if (loggedInUser) this.router.navigate(['dashboard']);
+
+    this.confirmPasswordErrorMessage$ = this.registerForm.valueChanges.pipe(
+      startWith(this.registerForm.value),
+      map(() => {
+        return this.registerForm.controls.confirmPassword.hasError('passwordMismatch') ? 'Nem egyező jelszavak!' : null;
+      })
+    );
+  }
 
   register(): void {
     if (this.registerForm.valid) {
@@ -46,9 +70,23 @@ export class RegisterComponent {
           first()
         )
         .subscribe((loginResponse) => {
-          sessionStorage.setItem('loggedInUser', loginResponse.accessToken);
+          this.authService.setLoggedInUser(loginResponse);
           this.router.navigate(['dashboard']);
         });
+    }
+  }
+
+  passwordMatchValidator(control: AbstractControl): ValidationErrors | null {
+    const formGroup = control as typeof this.registerForm;
+    const password = formGroup.controls.password;
+    const confirmPassword = formGroup.controls.confirmPassword;
+
+    if (password && confirmPassword && password.value !== confirmPassword.value) {
+      confirmPassword.setErrors({ passwordMismatch: true });
+      return { passwordMismatch: true };
+    } else {
+      confirmPassword.setErrors(null);
+      return null;
     }
   }
 }

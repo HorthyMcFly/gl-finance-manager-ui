@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable, tap } from 'rxjs';
+import { LoginResponse, RegisterRequest } from '../../models/Api';
 
 @Injectable({
   providedIn: 'root',
@@ -8,44 +9,33 @@ import { Observable } from 'rxjs';
 export class AuthService {
   constructor(private http: HttpClient) {}
 
-  isLoggedIn(): boolean {
-    return sessionStorage.getItem('app.token') != null;
-  }
+  private _loggedInUser$ = new BehaviorSubject<LoginResponse | null>(
+    JSON.parse(localStorage.getItem('loggedInUser') ?? 'null')
+  );
+  loggedInUser$ = this._loggedInUser$.pipe(
+    tap((loggedInUser) => {
+      if (loggedInUser === null) {
+        localStorage.removeItem('loggedInUser');
+      } else {
+        localStorage.setItem('loggedInUser', JSON.stringify(loggedInUser));
+      }
+    })
+  );
 
-  // TODO: use swagger
-  login(username: string, password: string): Observable<{ username: string, accessToken: string}> {
+  login(username: string, password: string): Observable<LoginResponse> {
     const httpOptions = {
       headers: {
         Authorization: 'Basic ' + window.btoa(username + ':' + password),
-      }
+      },
     };
-    return this.http.post<{ username: string, accessToken: string}>('/api/auth/login', null, httpOptions);
+    return this.http.post<LoginResponse>('/api/auth/login', null, httpOptions);
   }
 
   register(username: string, password: string): Observable<never> {
-    return this.http.post<never>('/api/auth/register', { username, password });
+    return this.http.post<never>('/api/auth/register', { username, password } as RegisterRequest);
   }
 
-  logout() {
-    sessionStorage.removeItem('app.token');
-    sessionStorage.removeItem('app.roles');
-  }
-
-  isUserInRole(roleFromRoute: string) {
-    const roles = sessionStorage.getItem('app.roles');
-
-    if (roles!.includes(',')) {
-      if (roles === roleFromRoute) {
-        return true;
-      }
-    } else {
-      const roleArray = roles!.split(',');
-      for (let role of roleArray) {
-        if (role === roleFromRoute) {
-          return true;
-        }
-      }
-    }
-    return false;
+  setLoggedInUser(loggedInUser: LoginResponse | null): void {
+    this._loggedInUser$.next(loggedInUser);
   }
 }

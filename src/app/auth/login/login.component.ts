@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../auth.service';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -32,11 +32,16 @@ export class LoginComponent {
 
   constructor(public router: Router, private authService: AuthService, private formBuilder: FormBuilder) {}
 
+  ngOnInit(): void {
+    const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser') ?? 'null');
+    if (loggedInUser) this.router.navigate(['dashboard']);
+  }
+
   login(): void {
     if (this.loginForm.valid) {
       const formValue = this.loginForm.getRawValue();
       this.authService.login(formValue.username!, formValue.password!).subscribe((response) => {
-        sessionStorage.setItem("loggedInUser", response.accessToken);
+        this.authService.setLoggedInUser(response);
         this.router.navigate(['dashboard']);
       });
     }
