@@ -17,7 +17,7 @@ import { AuthService } from '../auth.service';
 import { Observable, first, map, startWith, switchMap } from 'rxjs';
 
 @Component({
-  selector: 'app-register',
+  selector: 'glfm-register',
   standalone: true,
   imports: [
     CommonModule,

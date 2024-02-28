@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpRequest, HttpHandler, HttpEvent, HttpInterceptor, HttpErrorResponse } from '@angular/common/http';
-import { Observable, catchError, switchMap, throwError } from 'rxjs';
+import { Observable, catchError, first, switchMap, throwError } from 'rxjs';
 import { Router } from '@angular/router';
-import { LoginResponse } from '../../models/Api';
 import { AuthService } from './auth.service';
 
 @Injectable()
@@ -15,6 +14,7 @@ export class AuthInterceptor implements HttpInterceptor {
     }
     return this.authService.loggedInUser$
       .pipe(
+        first(),
         switchMap((loggedInUser) => {
           if (loggedInUser?.accessToken) {
             request = request.clone({

@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { DashboardService } from './dashboard.service';
 
 @Component({
-  selector: 'app-dashboard',
+  selector: 'glfm-dashboard',
   standalone: true,
   imports: [CommonModule],
   providers: [DashboardService],

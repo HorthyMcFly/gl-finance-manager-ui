@@ -1,0 +1,15 @@
+<mat-toolbar>
+  <glfm-menu *ngIf="authService.loggedInUser$ | async"></glfm-menu>
+
+  <h1>GL Finance Manager</h1>
+
+  <div class="mr-auto"></div>
+
+  <ng-container *ngIf="authService.loggedInUser$ | async as loggedInUser">
+    <div class="mx-2 text-sm">
+      <span>{{ loggedInUser.username }}</span>
+    </div>
+
+    <button mat-raised-button color="primary" (click)="logout()">Kilépés</button>
+  </ng-container>
+</mat-toolbar>

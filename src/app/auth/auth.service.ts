@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable, tap } from 'rxjs';
+import { BehaviorSubject, Observable, shareReplay, tap } from 'rxjs';
 import { LoginResponse, RegisterRequest } from '../../models/Api';
 
 @Injectable({
@@ -19,7 +19,8 @@ export class AuthService {
       } else {
         localStorage.setItem('loggedInUser', JSON.stringify(loggedInUser));
       }
-    })
+    }),
+    shareReplay({ bufferSize: 1, refCount: true })
   );
 
   login(username: string, password: string): Observable<LoginResponse> {

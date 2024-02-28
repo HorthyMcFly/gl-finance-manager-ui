@@ -9,7 +9,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-login',
+  selector: 'glfm-login',
   standalone: true,
   imports: [
     CommonModule,
