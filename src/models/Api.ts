@@ -28,6 +28,11 @@ export interface LoginResponse {
    * @example "username"
    */
   username: string;
+  /**
+   * User role
+   * @example "ROLE_USER"
+   */
+  role: string;
   /** JWT access token */
   accessToken: string;
 }
