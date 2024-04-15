@@ -5,6 +5,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { Router, RouterModule } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { of } from 'rxjs';
+import { AuthService } from '../../auth/auth.service';
 
 interface MenuItem {
   path: string;
@@ -27,9 +28,18 @@ export class MenuComponent {
     },
   ];
 
-  menuItems$ = of(this._menuItems);
+  private _adminMenuItems: MenuItem[] = [
+    {
+      path: 'admin',
+      label: 'Felhasználók kezelése',
+      icon: 'dashboard',
+    },
+  ];
 
-  constructor(private router: Router) {}
+  menuItems$ = of(this._menuItems);
+  adminMenuItems$ = of(this._adminMenuItems);
+
+  constructor(public authService: AuthService, private router: Router) {}
 
   handleClick(menuItem: MenuItem) {
     this.router.navigate([menuItem.path]);

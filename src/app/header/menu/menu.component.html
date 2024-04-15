@@ -6,4 +6,14 @@
     <mat-icon>{{ menuItem.icon }}</mat-icon>
     <span>{{ menuItem.label }}</span>
   </button>
+  <ng-container *ngIf="(authService.loggedInUser$ | async)?.role === 'ROLE_ADMIN'">
+    <button
+      mat-menu-item
+      *ngFor="let menuItem of adminMenuItems$ | async; let i = index"
+      (click)="handleClick(menuItem)"
+    >
+      <mat-icon>{{ menuItem.icon }}</mat-icon>
+      <span>{{ menuItem.label }}</span>
+    </button>
+  </ng-container>
 </mat-menu>
