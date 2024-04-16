@@ -32,7 +32,7 @@ export class MenuComponent {
     {
       path: 'admin',
       label: 'Felhasználók kezelése',
-      icon: 'dashboard',
+      icon: 'admin_panel_settings',
     },
   ];
 

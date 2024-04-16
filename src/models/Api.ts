@@ -9,6 +9,15 @@
  * ---------------------------------------------------------------
  */
 
+export interface FmUser {
+  /** @format int32 */
+  id?: number;
+  username?: string;
+  password?: string;
+  admin?: boolean;
+  active?: boolean;
+}
+
 export interface RegisterRequest {
   /**
    * User name
@@ -39,13 +48,4 @@ export interface LoginResponse {
 
 export interface DashboardResponse {
   dashboardData?: string;
-}
-
-export interface FmUser {
-  /** @format int32 */
-  id?: number;
-  username?: string;
-  password?: string;
-  admin?: boolean;
-  active?: boolean;
 }
