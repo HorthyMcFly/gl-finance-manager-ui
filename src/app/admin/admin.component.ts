@@ -40,7 +40,7 @@ export class AdminComponent {
   addNewForm = this.formBuilder.group({
     username: this.formBuilder.nonNullable.control('', [
       Validators.required,
-      Validators.minLength(3),
+      Validators.minLength(5),
       Validators.maxLength(20),
     ]),
     admin: this.formBuilder.nonNullable.control(false),
@@ -50,7 +50,7 @@ export class AdminComponent {
     id: this.formBuilder.control(null as number | null),
     username: this.formBuilder.nonNullable.control('', [
       Validators.required,
-      Validators.minLength(3),
+      Validators.minLength(5),
       Validators.maxLength(20),
     ]),
     admin: this.formBuilder.nonNullable.control(false),

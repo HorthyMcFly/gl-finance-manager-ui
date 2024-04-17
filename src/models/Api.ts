@@ -12,6 +12,10 @@
 export interface FmUser {
   /** @format int32 */
   id?: number;
+  /**
+   * @minLength 5
+   * @maxLength 20
+   */
   username?: string;
   password?: string;
   admin?: boolean;

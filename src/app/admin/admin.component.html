@@ -25,6 +25,15 @@
         <mat-form-field>
           <mat-label>Felhasználónév</mat-label>
           <input matInput formControlName="username" />
+          <mat-error *ngIf="addNewForm.controls.username.errors?.['required']"
+            >Felhasználónév megadása kötelező!</mat-error
+          >
+          <mat-error *ngIf="addNewForm.controls.username.errors?.['minlength']"
+            >Minimum 5 karakter!</mat-error
+          >
+          <mat-error *ngIf="addNewForm.controls.username.errors?.['maxlength']"
+            >Maximum 20 karakter!</mat-error
+          >
         </mat-form-field>
         <mat-checkbox formControlName="admin">Admin</mat-checkbox>
         <button mat-raised-button color="primary" type="submit">OK</button>
@@ -41,6 +50,15 @@
         <mat-form-field>
           <mat-label>Felhasználónév</mat-label>
           <input matInput formControlName="username" />
+          <mat-error *ngIf="editForm.controls.username.errors?.['required']"
+            >Felhasználónév megadása kötelező!</mat-error
+          >
+          <mat-error *ngIf="editForm.controls.username.errors?.['minlength']"
+            >Minimum 5 karakter!</mat-error
+          >
+          <mat-error *ngIf="editForm.controls.username.errors?.['maxlength']"
+            >Maximum 20 karakter!</mat-error
+          >
         </mat-form-field>
         <mat-checkbox formControlName="admin">Admin</mat-checkbox>
         <mat-checkbox formControlName="active">Aktív</mat-checkbox>
