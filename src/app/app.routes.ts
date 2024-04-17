@@ -21,6 +21,11 @@ export const routes: Routes = [
     canActivate: [authGuard],
   },
   {
+    path: 'incomeexpense',
+    loadComponent: () => import('./income-expense/income-expense.component').then((m) => m.IncomeExpenseComponent),
+    canActivate: [authGuard],
+  },
+  {
     path: '**',
     redirectTo: 'login',
   },

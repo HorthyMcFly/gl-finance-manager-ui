@@ -26,6 +26,11 @@ export class MenuComponent {
       label: 'Áttekintő',
       icon: 'dashboard',
     },
+    {
+      path: 'incomeexpense',
+      label: 'Bevételek-Kiadások',
+      icon: 'balance',
+    },
   ];
 
   private _adminMenuItems: MenuItem[] = [
