@@ -1,1 +1,6 @@
-<p>income-expense works!</p>
+<div class="m-5">
+    <h1>Bevételek-Kiadások</h1>
+</div>
+<div *ngIf="balanceService.balance$ | async as userBalance" class="flex justify-center m-5">
+    <div class="text-lg font-medium">{{ 'Aktuális egyenleg: ' + (userBalance.balance | currency : 'HUF') }}</div>
+</div>

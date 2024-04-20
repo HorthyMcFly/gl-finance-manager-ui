@@ -50,6 +50,22 @@ export interface LoginResponse {
   accessToken: string;
 }
 
+export interface FmPeriod {
+  /** @format int32 */
+  id?: number;
+  /** @format date-time */
+  startDate?: string;
+  /** @format date-time */
+  endDate?: string;
+}
+
 export interface DashboardResponse {
   dashboardData?: string;
+}
+
+export interface BalanceDto {
+  /** @format int32 */
+  id?: number;
+  balance: number;
+  investmentBalance: number;
 }

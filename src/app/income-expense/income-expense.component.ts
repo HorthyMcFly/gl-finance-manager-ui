@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { BalanceService } from '../balance/balance.service';
 
 @Component({
   selector: 'glfm-income-expense',
@@ -10,5 +11,7 @@ import { CommonModule } from '@angular/common';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class IncomeExpenseComponent {
+
+  constructor(public balanceService: BalanceService) {}
 
 }
