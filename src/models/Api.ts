@@ -53,10 +53,12 @@ export interface LoginResponse {
 export interface FmPeriod {
   /** @format int32 */
   id?: number;
+  name?: string;
   /** @format date-time */
   startDate?: string;
   /** @format date-time */
   endDate?: string;
+  active?: boolean;
 }
 
 export interface DashboardResponse {

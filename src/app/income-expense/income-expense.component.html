@@ -1,6 +1,16 @@
 <div class="m-5">
-    <h1>Bevételek-Kiadások</h1>
+  <h1>Bevételek-Kiadások</h1>
 </div>
 <div *ngIf="balanceService.balance$ | async as userBalance" class="flex justify-center m-5">
-    <div class="text-lg font-medium">{{ 'Aktuális egyenleg: ' + (userBalance.balance | currency : 'HUF') }}</div>
+  <div class="text-lg font-medium">{{ 'Aktuális egyenleg: ' + (userBalance.balance | currency : 'HUF') }}</div>
+</div>
+<div class="m-5">
+    <mat-form-field>
+        <mat-label>Periódus</mat-label>
+        <mat-select (selectionChange)="incomeExpenseService.setSelectedPeriod($event.value)" [formControl]="periodSelectControl">
+            <mat-option *ngFor="let period of periods$ | async" [value]="period">{{
+            period.name + (period.active ? ' (aktív)' : '')
+            }}</mat-option>
+        </mat-select>
+    </mat-form-field>
 </div>
