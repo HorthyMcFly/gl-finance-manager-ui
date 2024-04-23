@@ -14,3 +14,6 @@
         </mat-select>
     </mat-form-field>
 </div>
+<ng-container *ngIf="incomeExpenseService.selectedPeriod$ | async as selectedPeriod">
+  <glfm-income />
+</ng-container>

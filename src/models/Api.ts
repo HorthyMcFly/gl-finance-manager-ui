@@ -54,11 +54,19 @@ export interface FmPeriod {
   /** @format int32 */
   id?: number;
   name?: string;
-  /** @format date-time */
+  /** @format date */
   startDate?: string;
-  /** @format date-time */
+  /** @format date */
   endDate?: string;
   active?: boolean;
+}
+
+export interface IncomeDto {
+  /** @format int32 */
+  id?: number;
+  amount?: number;
+  source?: string;
+  comment?: string;
 }
 
 export interface DashboardResponse {

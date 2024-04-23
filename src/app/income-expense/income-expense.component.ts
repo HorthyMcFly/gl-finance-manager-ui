@@ -7,11 +7,12 @@ import { FmPeriod } from '../../models/Api';
 import { MatSelectModule } from '@angular/material/select';
 import { tap } from 'rxjs';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { IncomeComponent } from './income/income.component';
 
 @Component({
   selector: 'glfm-income-expense',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatSelectModule, MatFormFieldModule],
+  imports: [CommonModule, ReactiveFormsModule, MatSelectModule, MatFormFieldModule, IncomeComponent],
   providers: [IncomeExpenseService],
   templateUrl: './income-expense.component.html',
   styleUrls: ['./income-expense.component.scss'],
