@@ -8,11 +8,12 @@ import { MatSelectModule } from '@angular/material/select';
 import { tap } from 'rxjs';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { IncomeComponent } from './income/income.component';
+import { ExpenseComponent } from './expense/expense.component';
 
 @Component({
   selector: 'glfm-income-expense',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatSelectModule, MatFormFieldModule, IncomeComponent],
+  imports: [CommonModule, ReactiveFormsModule, MatSelectModule, MatFormFieldModule, IncomeComponent, ExpenseComponent],
   providers: [IncomeExpenseService],
   templateUrl: './income-expense.component.html',
   styleUrls: ['./income-expense.component.scss'],

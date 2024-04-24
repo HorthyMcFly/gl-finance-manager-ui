@@ -69,6 +69,25 @@ export interface IncomeDto {
   comment?: string;
 }
 
+export interface ExpenseCategory {
+  /** @format int32 */
+  id?: number;
+  category?: string;
+}
+
+export interface ExpenseDto {
+  /** @format int32 */
+  id?: number;
+  /** @format int32 */
+  periodId?: number;
+  /** @format int32 */
+  loanId?: number;
+  amount?: number;
+  recipient?: string;
+  expenseCategory?: ExpenseCategory;
+  comment?: string;
+}
+
 export interface DashboardResponse {
   dashboardData?: string;
 }
