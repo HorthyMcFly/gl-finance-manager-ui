@@ -31,6 +31,11 @@ export class MenuComponent {
       label: 'Bevételek-Kiadások',
       icon: 'balance',
     },
+    {
+      path: 'loan',
+      label: 'Hitelek',
+      icon: 'account_balance',
+    },
   ];
 
   private _adminMenuItems: MenuItem[] = [

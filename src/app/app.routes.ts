@@ -26,6 +26,11 @@ export const routes: Routes = [
     canActivate: [authGuard],
   },
   {
+    path: 'loan',
+    loadComponent: () => import('./loan/loan.component').then((m) => m.LoanComponent),
+    canActivate: [authGuard],
+  },
+  {
     path: '**',
     redirectTo: 'login',
   },

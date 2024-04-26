@@ -1,0 +1,12 @@
+<div class="m-5">
+  <h1>Hitelek</h1>
+
+  <mat-accordion class="m-5">
+    <mat-expansion-panel *ngFor="let loan of loanService.loans$ | async">
+      <mat-expansion-panel-header>
+        <span class="text-lg">{{ loan.name }}</span>
+      </mat-expansion-panel-header>
+      <glfm-loan-details [loan]="loan" />
+    </mat-expansion-panel>
+  </mat-accordion>
+</div>

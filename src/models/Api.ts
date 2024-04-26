@@ -61,6 +61,15 @@ export interface FmPeriod {
   active?: boolean;
 }
 
+export interface LoanDto {
+  /** @format int32 */
+  id?: number;
+  amount?: number;
+  name?: string;
+  interestRate?: number;
+  monthlyRepayment?: number;
+}
+
 export interface IncomeDto {
   /** @format int32 */
   id?: number;

@@ -1,0 +1,31 @@
+<div class="grid grid-cols-1 sm:grid-cols-4">
+  <div class="flex items-center">
+    <strong class="me-1">Összeg:</strong>
+    <span>{{ loan.amount | currency : 'HUF' }}</span>
+  </div>
+  <div class="flex items-center">
+    <strong class="me-1">Kamat:</strong>
+    <span>{{ loan.interestRate }}%</span>
+  </div>
+  <div class="flex items-center">
+    <strong class="me-1">Havi törlesztőrészlet:</strong>
+    <span>{{ loan.monthlyRepayment | currency : 'HUF' }}</span>
+  </div>
+  <div class="flex justify-center items-center md:justify-end">
+    <button mat-raised-button color="primary" [disabled]="true">Szerkesztés</button>
+  </div>
+</div>
+
+<div *ngIf="loanRundown">
+  <div class="text-lg text-semibold mb-2">Hitel lefutása a hátralévő időszakra:</div>
+  <div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6">
+    <div *ngFor="let outstandingByYear of loanRundown.outstandingByYear; let i = index">
+      <strong>{{ i }}.év: </strong>
+      <span>{{ outstandingByYear | currency : 'HUF' }}</span>
+    </div>
+  </div>
+  <div class="mt-2">
+    <strong>Teljes visszafizetendő összeg: </strong>
+    <span>{{ loanRundown.totalAmountRepaid | currency : 'HUF' }}</span>
+  </div>
+</div>
