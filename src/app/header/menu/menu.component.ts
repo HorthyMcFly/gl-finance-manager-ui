@@ -32,6 +32,11 @@ export class MenuComponent {
       icon: 'balance',
     },
     {
+      path: 'asset',
+      label: 'Befektetések',
+      icon: 'savings',
+    },
+    {
       path: 'loan',
       label: 'Hitelek',
       icon: 'account_balance',

@@ -107,3 +107,22 @@ export interface BalanceDto {
   balance: number;
   investmentBalance: number;
 }
+
+export interface AssetDto {
+  /** @format int32 */
+  id?: number;
+  amount?: number;
+  name?: string;
+  assetType?: AssetType;
+  /** @format date */
+  maturityDate?: string;
+  interestRate?: number;
+  /** @format date */
+  interestPaymentDate?: string;
+}
+
+export interface AssetType {
+  /** @format int32 */
+  id?: number;
+  type?: string;
+}
