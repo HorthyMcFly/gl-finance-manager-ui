@@ -97,8 +97,8 @@ export interface ExpenseDto {
   comment?: string;
 }
 
-export interface DashboardResponse {
-  dashboardData?: string;
+export interface AssetSummary {
+  totalAssetValue?: number;
 }
 
 export interface BalanceDto {
@@ -106,6 +106,22 @@ export interface BalanceDto {
   id?: number;
   balance: number;
   investmentBalance: number;
+}
+
+export interface DashboardData {
+  balance?: BalanceDto;
+  incomeExpenseSummary?: IncomeExpenseSummary;
+  assetSummary?: AssetSummary;
+  loanSummary?: LoanSummary;
+}
+
+export interface IncomeExpenseSummary {
+  totalIncome?: number;
+  totalExpense?: number;
+}
+
+export interface LoanSummary {
+  totalLoanValue?: number;
 }
 
 export interface AssetDto {

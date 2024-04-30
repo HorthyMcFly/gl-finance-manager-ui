@@ -1,1 +1,47 @@
-<p>dashboard works!</p>
+<div class="m-5">
+  <h1>Összefoglaló</h1>
+
+  <ng-container *ngIf="dashboardService.dashboardData$ | async as dashboardData">
+    <div class="flex justify-center m-5">
+      <div class="text-lg font-medium">
+        {{ 'Aktuális egyenleg: ' + (dashboardData.balance?.balance | currency : 'HUF') }}
+      </div>
+    </div>
+
+    <mat-card>
+      <mat-card-header><h2>Aktuális havi bevételek és kiadások</h2></mat-card-header>
+      <mat-card-content *ngIf="dashboardData.incomeExpenseSummary as incomeExpenseSummary">
+        <div class="grid grid-cols-2">
+          <div class="flex items-center">
+            <strong class="me-1">Összes bevétel a hónapban:</strong>
+            <span>{{ incomeExpenseSummary.totalIncome | currency : 'HUF' }}</span>
+          </div>
+          <div class="flex items-center">
+            <strong class="me-1">Összes kiadás a hónapban:</strong>
+            <span>{{ incomeExpenseSummary.totalExpense | currency : 'HUF' }}</span>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="mt-5">
+      <mat-card-header><h2>Aktív befektetések</h2></mat-card-header>
+      <mat-card-content *ngIf="dashboardData.assetSummary as assetSummary">
+        <div class="flex items-center">
+          <strong class="me-1">Befektetések összértéke:</strong>
+          <span>{{ assetSummary.totalAssetValue| currency : 'HUF' }}</span>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="mt-5">
+      <mat-card-header><h2>Aktív hitelek</h2></mat-card-header>
+      <mat-card-content *ngIf="dashboardData.loanSummary as loanSummary">
+        <div class="flex items-center">
+          <strong class="me-1">Összes tartozás:</strong>
+          <span>{{ loanSummary.totalLoanValue| currency : 'HUF' }}</span>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </ng-container>
+</div>

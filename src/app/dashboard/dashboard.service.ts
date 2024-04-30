@@ -1,13 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, shareReplay } from 'rxjs';
+import { DashboardData } from '../../models/Api';
 
 @Injectable()
 export class DashboardService {
+  dashboardData$ = this.http.get<DashboardData>('/api/dashboard').pipe(shareReplay({ bufferSize: 1, refCount: true }));
 
-  constructor(private http: HttpClient) { }
-
-  getDashboardData(): Observable<any> {
-    return this.http.get('/api/dashboard');
-  }
+  constructor(private http: HttpClient) {}
 }
