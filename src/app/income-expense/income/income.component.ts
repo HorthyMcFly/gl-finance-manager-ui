@@ -4,9 +4,11 @@ import { IncomeService } from './income.service';
 import { MatCardModule } from '@angular/material/card';
 import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { BehaviorSubject, map, tap } from 'rxjs';
+import { IncomeDto } from '../../../models/Api';
 
 @Component({
   selector: 'glfm-income',
@@ -28,5 +30,44 @@ import { MatInputModule } from '@angular/material/input';
 export class IncomeComponent {
   columns: string[] = ['amount', 'source', 'comment', 'edit'];
 
-  constructor(public incomeService: IncomeService) {}
+  incomeForm = this.formBuilder.group({
+    id: this.formBuilder.control(null as number | null),
+    amount: this.formBuilder.control(null as number | null),
+    source: this.formBuilder.nonNullable.control('', [
+      Validators.required,
+      Validators.minLength(1),
+      Validators.maxLength(30),
+    ]),
+    comment: this.formBuilder.control(null as string | null, [Validators.maxLength(100)]),
+  });
+
+  #formValueIncome$ = new BehaviorSubject<IncomeDto | null>(null);
+  formVisible$ = this.#formValueIncome$.pipe(
+    tap(() => this.incomeForm.reset()),
+    map((formValueIncome) => formValueIncome !== null)
+  );
+
+  constructor(public incomeService: IncomeService, private formBuilder: FormBuilder) {}
+
+  addNew() {
+    this.#formValueIncome$.next({});
+  }
+
+  cancelForm() {
+    this.#formValueIncome$.next(null);
+  }
+
+  createOrModifyIncome() {
+    const formValue = this.incomeForm.getRawValue();
+    // TODO swagger mandatory fields
+    const saveObject = {
+      id: undefined,
+      amount: formValue.amount ?? undefined,
+      source: formValue.source ?? undefined,
+      comment: formValue.comment ?? undefined,
+    }
+    this.incomeService.createIncome(saveObject).subscribe((savedIncome) => {
+      this.incomeService.addIncome(savedIncome);
+    });
+  }
 }

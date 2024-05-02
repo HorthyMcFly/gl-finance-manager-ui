@@ -22,6 +22,14 @@ export interface FmUser {
   active?: boolean;
 }
 
+export interface IncomeDto {
+  /** @format int32 */
+  id?: number;
+  amount?: number;
+  source?: string;
+  comment?: string;
+}
+
 export interface RegisterRequest {
   /**
    * User name
@@ -68,14 +76,6 @@ export interface LoanDto {
   name?: string;
   interestRate?: number;
   monthlyRepayment?: number;
-}
-
-export interface IncomeDto {
-  /** @format int32 */
-  id?: number;
-  amount?: number;
-  source?: string;
-  comment?: string;
 }
 
 export interface ExpenseCategory {

@@ -3,6 +3,41 @@
     <h1>Bevételek</h1>
   </mat-card-header>
   <mat-card-content>
+    <div class="flex items-center gap-2">
+      <div *ngIf="!(formVisible$ | async)" class="ms-auto">
+        <button mat-raised-button color="primary" (click)="addNew()">Bevétel hozzáadása</button>
+      </div>
+      <form
+        *ngIf="formVisible$ | async"
+        [formGroup]="incomeForm"
+        (ngSubmit)="createOrModifyIncome()"
+        class="flex items-center gap-2 w-full"
+      >
+        <mat-form-field>
+          <mat-label>Összeg</mat-label>
+          <input matInput formControlName="amount" />
+          <mat-error *ngIf="incomeForm.controls.amount.errors?.['required']"
+            >Összeg megadása kötelező!</mat-error
+          >
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>Forrás</mat-label>
+          <input matInput formControlName="source" />
+          <mat-error *ngIf="incomeForm.controls.source.errors?.['required']"
+            >Forrás megadása kötelező!</mat-error
+          >
+        </mat-form-field>
+        <mat-form-field class="me-auto">
+          <mat-label>Megjegyzés</mat-label>
+          <input matInput formControlName="comment" />
+          <mat-error *ngIf="incomeForm.controls.source.errors?.['maxlength']"
+            >Maximum 30 karakter!</mat-error
+          >
+        </mat-form-field>
+        <button mat-raised-button color="primary" type="submit">OK</button>
+        <button mat-raised-button (click)="cancelForm()" type="button">Mégsem</button>
+      </form>
+    </div>
     <table mat-table [dataSource]="incomeService.incomes$">
       <ng-container matColumnDef="amount">
         <th mat-header-cell *matHeaderCellDef>Összeg</th>

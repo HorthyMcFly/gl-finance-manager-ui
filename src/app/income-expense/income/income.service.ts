@@ -17,4 +17,12 @@ export class IncomeService {
   );
 
   constructor(private http: HttpClient, private incomeExpenseService: IncomeExpenseService) { }
+
+  createIncome(incomeDto: IncomeDto) {
+    return this.http.post<IncomeDto>('api/incomes', incomeDto);
+  }
+
+  addIncome(incomeDto: IncomeDto) {
+    this.#incomes.next([...(this.#incomes.value ?? []), incomeDto]);
+  }
 }
