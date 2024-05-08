@@ -9,6 +9,14 @@
  * ---------------------------------------------------------------
  */
 
+export interface IncomeDto {
+  /** @format int32 */
+  id: number | null;
+  amount: number;
+  source: string;
+  comment: string | null;
+}
+
 export interface FmUser {
   /** @format int32 */
   id?: number;
@@ -20,14 +28,6 @@ export interface FmUser {
   password?: string;
   admin?: boolean;
   active?: boolean;
-}
-
-export interface IncomeDto {
-  /** @format int32 */
-  id?: number;
-  amount?: number;
-  source?: string;
-  comment?: string;
 }
 
 export interface RegisterRequest {

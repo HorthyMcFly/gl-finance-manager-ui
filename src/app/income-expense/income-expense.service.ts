@@ -11,6 +11,8 @@ export class IncomeExpenseService {
   #selectedPeriod$ = new BehaviorSubject<FmPeriod | null>(null);
   selectedPeriod$ = this.#selectedPeriod$.asObservable();
 
+  underEdit$ = new BehaviorSubject(false);
+
   constructor(private http: HttpClient) {}
 
   setSelectedPeriod(period: FmPeriod | null) {

@@ -6,7 +6,6 @@ import { IncomeExpenseService } from '../income-expense.service';
 
 @Injectable()
 export class IncomeService {
-
   #incomes = new BehaviorSubject(null as IncomeDto[] | null);
   incomes$ = this.incomeExpenseService.selectedPeriod$.pipe(
     filter((selectedPeriod) => selectedPeriod !== null),
@@ -16,13 +15,28 @@ export class IncomeService {
     switchMap(() => this.#incomes.pipe(map((incomes) => incomes ?? [])))
   );
 
-  constructor(private http: HttpClient, private incomeExpenseService: IncomeExpenseService) { }
+  constructor(private http: HttpClient, private incomeExpenseService: IncomeExpenseService) {}
 
   createIncome(incomeDto: IncomeDto) {
     return this.http.post<IncomeDto>('api/incomes', incomeDto);
   }
 
+  modifyIncome(incomeDto: IncomeDto) {
+    return this.http.put<IncomeDto>('api/incomes', incomeDto);
+  }
+
   addIncome(incomeDto: IncomeDto) {
     this.#incomes.next([...(this.#incomes.value ?? []), incomeDto]);
+  }
+
+  updateIncome(incomeDto: IncomeDto) {
+    this.#incomes.next(
+      this.#incomes.value?.map((income) => {
+        if (income.id === incomeDto.id) {
+          Object.assign(income, incomeDto);
+        }
+        return income;
+      }) ?? []
+    );
   }
 }
