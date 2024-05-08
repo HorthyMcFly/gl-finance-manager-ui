@@ -69,6 +69,7 @@ export class IncomeComponent {
       if (formValueIncome?.id) {
         this.incomeForm.setValue(formValueIncome);
       }
+      this.incomeExpenseService.underEdit$.next(formValueIncome !== null);
     }),
     map((formValueIncome) => formValueIncome !== null)
   );

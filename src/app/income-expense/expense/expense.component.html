@@ -27,7 +27,7 @@
               <button
                 mat-raised-button
                 color="primary"
-                [disabled]="true"
+                [disabled]="incomeExpenseService.underEdit$ | async"
               >
                 Szerkesztés
               </button>

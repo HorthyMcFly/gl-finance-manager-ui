@@ -7,6 +7,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { IncomeExpenseService } from '../income-expense.service';
 
 @Component({
   selector: 'glfm-expense',
@@ -26,11 +27,7 @@ import { MatInputModule } from '@angular/material/input';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ExpenseComponent {
-
   columns: string[] = ['amount', 'recipient', 'category', 'comment', 'edit'];
 
-  constructor(public expenseService: ExpenseService) {
-
-  }
-
+  constructor(public expenseService: ExpenseService, public incomeExpenseService: IncomeExpenseService) {}
 }

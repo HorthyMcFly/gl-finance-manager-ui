@@ -5,14 +5,23 @@
   <div class="text-lg font-medium">{{ 'Aktuális egyenleg: ' + (userBalance.balance | currency : 'HUF') }}</div>
 </div>
 <div class="m-5">
-    <mat-form-field>
-        <mat-label>Periódus</mat-label>
-        <mat-select (selectionChange)="incomeExpenseService.setSelectedPeriod($event.value)" [formControl]="periodSelectControl">
-            <mat-option *ngFor="let period of periods$ | async" [value]="period">{{
-            period.name + (period.active ? ' (aktív)' : '')
-            }}</mat-option>
-        </mat-select>
-    </mat-form-field>
+  <mat-form-field *ngIf="!(incomeExpenseService.underEdit$ | async)">
+    <mat-label>Periódus</mat-label>
+    <mat-select
+      (selectionChange)="incomeExpenseService.setSelectedPeriod($event.value)"
+      [formControl]="periodSelectControl"
+    >
+      <mat-option *ngFor="let period of periods$ | async" [value]="period">{{
+        period.name + (period.active ? ' (aktív)' : '')
+      }}</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <div *ngIf="incomeExpenseService.underEdit$ | async">
+    <span
+      ><strong>Periódus: </strong
+      >{{ periodSelectControl.value?.name + (periodSelectControl.value?.active ? ' (aktív)' : '') }}</span
+    >
+  </div>
 </div>
 <ng-container *ngIf="incomeExpenseService.selectedPeriod$ | async as selectedPeriod">
   <glfm-income />
