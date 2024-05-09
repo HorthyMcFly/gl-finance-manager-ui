@@ -25,6 +25,10 @@ export class IncomeService {
     return this.http.put<IncomeDto>('api/incomes', incomeDto);
   }
 
+  deleteIncome(incomeId: number) {
+    return this.http.delete(`api/incomes/${incomeId}`);
+  }
+
   addIncome(incomeDto: IncomeDto) {
     this.#incomes.next([...(this.#incomes.value ?? []), incomeDto]);
   }
@@ -38,5 +42,9 @@ export class IncomeService {
         return income;
       }) ?? []
     );
+  }
+
+  removeIncome(incomeId: number) {
+    this.#incomes.next(this.#incomes.value?.filter((income) => income.id !== incomeId) ?? []);
   }
 }

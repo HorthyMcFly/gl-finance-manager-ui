@@ -10,6 +10,8 @@ import { MatInputModule } from '@angular/material/input';
 import { BehaviorSubject, map, tap } from 'rxjs';
 import { IncomeDto } from '../../../models/Api';
 import { IncomeExpenseService } from '../income-expense.service';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { DeleteDialogComponent } from '../../dialog/delete-dialog.component';
 
 @Component({
   selector: 'glfm-income',
@@ -22,6 +24,8 @@ import { IncomeExpenseService } from '../income-expense.service';
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
+    MatDialogModule,
+    DeleteDialogComponent,
   ],
   providers: [IncomeService],
   templateUrl: './income.component.html',
@@ -77,6 +81,7 @@ export class IncomeComponent {
   constructor(
     public incomeService: IncomeService,
     public incomeExpenseService: IncomeExpenseService,
+    private dialog: MatDialog,
     private formBuilder: FormBuilder
   ) {}
 
@@ -91,6 +96,15 @@ export class IncomeComponent {
 
   modifyIncome(income: IncomeDto) {
     this.#formValueIncome$.next(income);
+  }
+
+  deleteIncome(incomeId: number) {
+    const dialogRef = this.dialog.open(DeleteDialogComponent);
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.incomeService.deleteIncome(incomeId).subscribe(() => this.incomeService.removeIncome(incomeId));
+      }
+    });
   }
 
   cancelForm() {

@@ -12,8 +12,22 @@
 export interface IncomeDto {
   /** @format int32 */
   id: number | null;
+  /**
+   * @min 1
+   * @exclusiveMin false
+   * @max 1000000000
+   * @exclusiveMax false
+   */
   amount: number;
+  /**
+   * @minLength 1
+   * @maxLength 30
+   */
   source: string;
+  /**
+   * @minLength 0
+   * @maxLength 100
+   */
   comment: string | null;
 }
 
