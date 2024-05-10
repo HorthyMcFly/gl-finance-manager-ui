@@ -4,7 +4,7 @@
   <ng-container *ngIf="dashboardService.dashboardData$ | async as dashboardData">
     <div class="flex justify-center m-5">
       <div class="text-lg font-medium">
-        {{ 'Aktuális egyenleg: ' + (dashboardData.balance?.balance | currency : 'HUF') }}
+        {{ 'Aktuális egyenleg: ' + (dashboardData.balance?.balance ?? 0 | currency : 'HUF') }}
       </div>
     </div>
 
