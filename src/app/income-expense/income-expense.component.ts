@@ -5,7 +5,7 @@ import { IncomeExpenseService } from './income-expense.service';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { FmPeriod } from '../../models/Api';
 import { MatSelectModule } from '@angular/material/select';
-import { tap } from 'rxjs';
+import { first, shareReplay, tap } from 'rxjs';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { IncomeComponent } from './income/income.component';
 import { ExpenseComponent } from './expense/expense.component';
@@ -25,7 +25,8 @@ export class IncomeExpenseComponent {
       const activePeriod = periods?.find((period) => period.active) ?? null;
       this.incomeExpenseService.setSelectedPeriod(activePeriod);
       this.periodSelectControl.setValue(activePeriod);
-    })
+    }),
+    shareReplay({ bufferSize: 1, refCount: true})
   );
 
   periodSelectControl = this.formBuilder.control(null as FmPeriod | null);

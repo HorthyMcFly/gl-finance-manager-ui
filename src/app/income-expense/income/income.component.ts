@@ -12,6 +12,7 @@ import { IncomeDto } from '../../../models/Api';
 import { IncomeExpenseService } from '../income-expense.service';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { DeleteDialogComponent } from '../../dialog/delete-dialog.component';
+import { BalanceService } from '../../balance/balance.service';
 
 @Component({
   selector: 'glfm-income',
@@ -81,6 +82,7 @@ export class IncomeComponent {
   constructor(
     public incomeService: IncomeService,
     public incomeExpenseService: IncomeExpenseService,
+    private balanceService: BalanceService,
     private dialog: MatDialog,
     private formBuilder: FormBuilder
   ) {}
@@ -102,7 +104,10 @@ export class IncomeComponent {
     const dialogRef = this.dialog.open(DeleteDialogComponent);
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        this.incomeService.deleteIncome(incomeId).subscribe(() => this.incomeService.removeIncome(incomeId));
+        this.incomeService.deleteIncome(incomeId).subscribe(() => {
+          this.incomeService.removeIncome(incomeId);
+          this.resetFormAndReloadBalance();
+        });
       }
     });
   }
@@ -127,13 +132,18 @@ export class IncomeComponent {
     if (saveObject.id === null) {
       this.incomeService.createIncome(saveObject).subscribe((savedIncome) => {
         this.incomeService.addIncome(savedIncome);
-        this.#formValueIncome$.next(null);
+        this.resetFormAndReloadBalance();
       });
     } else {
       this.incomeService.modifyIncome(saveObject).subscribe((savedIncome) => {
         this.incomeService.updateIncome(savedIncome);
-        this.#formValueIncome$.next(null);
+        this.resetFormAndReloadBalance();
       });
     }
+  }
+
+  private resetFormAndReloadBalance() {
+    this.#formValueIncome$.next(null);
+    this.balanceService.reloadBalance();
   }
 }
