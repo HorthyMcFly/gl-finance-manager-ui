@@ -5,7 +5,14 @@
   <mat-card-content>
     <div class="flex items-center gap-2">
       <div *ngIf="!(formVisible$ | async)" class="ms-auto">
-        <button mat-raised-button color="primary" (click)="addNew()">Bevétel hozzáadása</button>
+        <button
+          mat-raised-button
+          color="primary"
+          [disabled]="incomeExpenseService.underEdit$ | async"
+          (click)="addNew()"
+        >
+          Bevétel hozzáadása
+        </button>
       </div>
       <form
         *ngIf="formVisible$ | async"
@@ -16,9 +23,7 @@
         <mat-form-field>
           <mat-label>Összeg</mat-label>
           <input matInput formControlName="amount" />
-          <mat-error *ngIf="incomeForm.controls.amount.errors?.['required']"
-            >Összeg megadása kötelező!</mat-error
-          >
+          <mat-error *ngIf="incomeForm.controls.amount.errors?.['required']">Összeg megadása kötelező!</mat-error>
           <mat-error *ngIf="incomeForm.controls.amount.errors?.['min']"
             >Minimum {{ VALIDATION_VALUES.amount.MIN | number : '1.0-2' }}!</mat-error
           >
@@ -29,9 +34,7 @@
         <mat-form-field>
           <mat-label>Forrás</mat-label>
           <input matInput formControlName="source" />
-          <mat-error *ngIf="incomeForm.controls.source.errors?.['required']"
-            >Forrás megadása kötelező!</mat-error
-          >
+          <mat-error *ngIf="incomeForm.controls.source.errors?.['required']">Forrás megadása kötelező!</mat-error>
           <mat-error *ngIf="incomeForm.controls.amount.errors?.['minlength']"
             >Minimum {{ VALIDATION_VALUES.source.MIN_LENGTH }} karakter!</mat-error
           >
@@ -43,7 +46,7 @@
           <mat-label>Megjegyzés</mat-label>
           <input matInput formControlName="comment" />
           <mat-error *ngIf="incomeForm.controls.comment.errors?.['maxlength']"
-            >Maximum {{ VALIDATION_VALUES.comment.MAX_LENGTH  }} karakter!</mat-error
+            >Maximum {{ VALIDATION_VALUES.comment.MAX_LENGTH }} karakter!</mat-error
           >
         </mat-form-field>
         <button mat-raised-button color="primary" type="submit">OK</button>

@@ -31,6 +31,36 @@ export interface IncomeDto {
   comment: string | null;
 }
 
+export interface ExpenseCategory {
+  /** @format int32 */
+  id?: number;
+  category?: string;
+}
+
+export interface ExpenseDto {
+  /** @format int32 */
+  id: number | null;
+  /**
+   * @min 1
+   * @exclusiveMin false
+   * @max 1000000000
+   * @exclusiveMax false
+   */
+  amount: number;
+  /**
+   * @minLength 1
+   * @maxLength 30
+   */
+  recipient: string;
+  expenseCategory: ExpenseCategory;
+  /**
+   * @minLength 0
+   * @maxLength 100
+   */
+  comment: string | null;
+  hasRelatedLoan: boolean;
+}
+
 export interface FmUser {
   /** @format int32 */
   id?: number;
@@ -90,25 +120,6 @@ export interface LoanDto {
   name?: string;
   interestRate?: number;
   monthlyRepayment?: number;
-}
-
-export interface ExpenseCategory {
-  /** @format int32 */
-  id?: number;
-  category?: string;
-}
-
-export interface ExpenseDto {
-  /** @format int32 */
-  id?: number;
-  /** @format int32 */
-  periodId?: number;
-  /** @format int32 */
-  loanId?: number;
-  amount?: number;
-  recipient?: string;
-  expenseCategory?: ExpenseCategory;
-  comment?: string;
 }
 
 export interface AssetSummary {
