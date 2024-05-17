@@ -3,6 +3,105 @@
     <h1>Befektetések</h1>
   </mat-card-header>
   <mat-card-content>
+    <div class="flex justify-center m-5">
+      <div class="text-lg font-medium">
+        {{ 'Aktuális szabad pénz: ' + ((balanceService.balance$ | async)?.investmentBalance ?? 0 | currency : 'HUF') }}
+      </div>
+    </div>
+    <div class="flex items-center gap-2">
+      <div *ngIf="!(addAssetFormVisible$ | async)" class="ms-auto">
+        <button mat-raised-button color="primary" [disabled]="underEdit$ | async" (click)="addNew()">
+          Eszköz hozzáadása
+        </button>
+      </div>
+      <form
+        *ngIf="addAssetFormVisible$ | async"
+        [formGroup]="addAssetForm"
+        (ngSubmit)="createAsset()"
+        class="flex items-center gap-2 w-full"
+      >
+        <mat-form-field>
+          <mat-label>Összeg</mat-label>
+          <input type="number" matInput formControlName="amount" />
+          <mat-error *ngIf="addAssetForm.controls.amount.errors?.['required']">Összeg megadása kötelező!</mat-error>
+          <mat-error *ngIf="addAssetForm.controls.amount.errors?.['min']"
+            >Minimum {{ VALIDATION_VALUES.amount.MIN | number : '1.0-2' }}!</mat-error
+          >
+          <mat-error *ngIf="addAssetForm.controls.amount.errors?.['max']"
+            >Maximum {{ VALIDATION_VALUES.amount.MAX | number : '1.0-2' }}!</mat-error
+          >
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>Megnevezés</mat-label>
+          <input matInput formControlName="name" />
+          <mat-error *ngIf="addAssetForm.controls.name.errors?.['required']">Megnevezés megadása kötelező!</mat-error>
+          <mat-error *ngIf="addAssetForm.controls.name.errors?.['minlength']"
+            >Minimum {{ VALIDATION_VALUES.name.MIN_LENGTH }} karakter!</mat-error
+          >
+          <mat-error *ngIf="addAssetForm.controls.name.errors?.['maxlength']"
+            >Maximum {{ VALIDATION_VALUES.name.MAX_LENGTH }} karakter!</mat-error
+          >
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>Forrás</mat-label>
+          <mat-select formControlName="source">
+            <mat-option *ngFor="let assetSource of assetSources" [value]="assetSource">{{
+              assetSource.label
+            }}</mat-option>
+          </mat-select>
+          <mat-error *ngIf="addAssetForm.controls.source.errors?.['required']">Forrás megadása kötelező!</mat-error>
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>Típus</mat-label>
+          <mat-select formControlName="assetType" (selectionChange)="assetTypeChanged($event.value)">
+            <mat-option *ngFor="let assetType of assetTypes" [value]="assetType">{{ assetType.type }}</mat-option>
+          </mat-select>
+          <mat-error *ngIf="addAssetForm.controls.assetType.errors?.['required']">Típus megadása kötelező!</mat-error>
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>Lejárat</mat-label>
+          <input
+            matInput
+            formControlName="maturityDate"
+            [matDatepicker]="maturityDatePicker"
+            [min]="VALIDATION_VALUES.maturityDate.MIN"
+            placeholder="ÉÉÉÉ. HH. NN."
+          />
+          <mat-datepicker-toggle matIconSuffix [for]="maturityDatePicker"></mat-datepicker-toggle>
+          <mat-datepicker #maturityDatePicker></mat-datepicker>
+          <mat-error *ngIf="addAssetForm.controls.maturityDate.errors?.['required']"
+            >Lejárat megadása kötelező!</mat-error
+          >
+          <mat-error *ngIf="addAssetForm.controls.maturityDate.errors?.['matDatepickerMin']"
+            >Csak jövőbeli dátum lehet!</mat-error
+          >
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>Kamat</mat-label>
+          <input type="number" matInput formControlName="interestRate" />
+          <mat-error *ngIf="addAssetForm.controls.interestRate.errors?.['required']"
+            >Kamat megadása kötelező!</mat-error
+          >
+          <mat-error *ngIf="addAssetForm.controls.interestRate.errors?.['min']"
+            >Minimum {{ VALIDATION_VALUES.interestRate.MIN | number : '1.0-2' }}!</mat-error
+          >
+          <mat-error *ngIf="addAssetForm.controls.amount.errors?.['max']"
+            >Maximum {{ VALIDATION_VALUES.interestRate.MAX | number : '1.0-2' }}!</mat-error
+          >
+        </mat-form-field>
+        <mat-form-field *ngIf="addAssetForm.controls.interestPaymentMonth.enabled">
+          <mat-label>Kamatfizetés hónapja</mat-label>
+          <mat-select formControlName="interestPaymentMonth">
+            <mat-option *ngFor="let month of MONTH_LIST; let i = index" [value]="i">{{ month }}</mat-option>
+          </mat-select>
+          <mat-error *ngIf="addAssetForm.controls.interestPaymentMonth.errors?.['required']"
+            >Kamatfizetés hónapja kötelező!</mat-error
+          >
+        </mat-form-field>
+        <button mat-raised-button color="primary" type="submit">OK</button>
+        <button mat-raised-button (click)="resetAddNew()" type="button">Mégsem</button>
+      </form>
+    </div>
     <table mat-table [dataSource]="assetService.assets$">
       <ng-container matColumnDef="amount">
         <th mat-header-cell *matHeaderCellDef>Összeg</th>
@@ -24,15 +123,15 @@
         <th mat-header-cell *matHeaderCellDef>Kamat</th>
         <td mat-cell *matCellDef="let element">{{ element.interestRate }}</td>
       </ng-container>
-      <ng-container matColumnDef="interestPaymentDate">
-        <th mat-header-cell *matHeaderCellDef>Kamatfizetés napja</th>
-        <td mat-cell *matCellDef="let element">{{ element.interestPaymentDate }}</td>
+      <ng-container matColumnDef="interestPaymentMonth">
+        <th mat-header-cell *matHeaderCellDef>Kamatfizetés hónapja</th>
+        <td mat-cell *matCellDef="let element">{{ MONTH_LIST[element.interestPaymentMonth] }}</td>
       </ng-container>
       <ng-container matColumnDef="sell">
         <th mat-header-cell *matHeaderCellDef></th>
         <td mat-cell *matCellDef="let element">
           <div class="flex justify-end">
-            <button mat-raised-button color="primary" [disabled]="true">Eladás</button>
+            <button mat-raised-button color="primary" [disabled]="underEdit$ | async">Eladás</button>
           </div>
         </td>
       </ng-container>

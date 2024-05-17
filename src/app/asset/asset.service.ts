@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, map, shareReplay, switchMap, tap } from 'rxjs';
-import { AssetDto } from '../../models/Api';
+import { AssetDto, AssetType } from '../../models/Api';
 
 @Injectable()
 export class AssetService {
@@ -13,5 +13,15 @@ export class AssetService {
     switchMap(() => this.#assets.pipe(map((assets) => assets ?? [])))
   );
 
+  assetTypes$ = this.http.get<AssetType[]>('api/assets/asset-types');
+
   constructor(private http: HttpClient) { }
+
+  createAsset(assetDto: AssetDto) {
+    return this.http.post<AssetDto>('api/assets', assetDto);
+  }
+
+  addAsset(assetDto: AssetDto) {
+    this.#assets.next([...(this.#assets.value ?? []), assetDto]);
+  }
 }

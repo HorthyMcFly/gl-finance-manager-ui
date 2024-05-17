@@ -102,6 +102,42 @@ export interface LoginResponse {
   accessToken: string;
 }
 
+export interface AssetDto {
+  /** @format int32 */
+  id: number | null;
+  /**
+   * @min 1
+   * @exclusiveMin false
+   * @max 1000000000
+   * @exclusiveMax false
+   */
+  amount: number;
+  /**
+   * @minLength 1
+   * @maxLength 30
+   */
+  name: string;
+  useInvestmentBalance: boolean;
+  assetType: AssetType;
+  /** @format date */
+  maturityDate: string | null;
+  /**
+   * @min -100
+   * @exclusiveMin false
+   * @max 1000
+   * @exclusiveMax false
+   */
+  interestRate: number;
+  /** @format int32 */
+  interestPaymentMonth: number | null;
+}
+
+export interface AssetType {
+  /** @format int32 */
+  id?: number;
+  type?: string;
+}
+
 export interface FmPeriod {
   /** @format int32 */
   id?: number;
@@ -147,23 +183,4 @@ export interface IncomeExpenseSummary {
 
 export interface LoanSummary {
   totalLoanValue?: number;
-}
-
-export interface AssetDto {
-  /** @format int32 */
-  id?: number;
-  amount?: number;
-  name?: string;
-  assetType?: AssetType;
-  /** @format date */
-  maturityDate?: string;
-  interestRate?: number;
-  /** @format date */
-  interestPaymentDate?: string;
-}
-
-export interface AssetType {
-  /** @format int32 */
-  id?: number;
-  type?: string;
 }
