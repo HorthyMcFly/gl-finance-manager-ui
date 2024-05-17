@@ -5,7 +5,10 @@
   <mat-card-content>
     <div class="flex justify-center m-5">
       <div class="text-lg font-medium">
-        {{ 'Aktuális szabad pénz: ' + ((balanceService.balance$ | async)?.investmentBalance ?? 0 | currency : 'HUF') }}
+        {{
+          'Aktuális befektetési egyenleg: ' +
+            ((balanceService.balance$ | async)?.investmentBalance ?? 0 | currency : 'HUF')
+        }}
       </div>
     </div>
     <div class="flex items-center gap-2">
@@ -29,6 +32,9 @@
           >
           <mat-error *ngIf="addAssetForm.controls.amount.errors?.['max']"
             >Maximum {{ VALIDATION_VALUES.amount.MAX | number : '1.0-2' }}!</mat-error
+          >
+          <mat-error *ngIf="addAssetForm.controls.amount.errors?.['amountExceedsInvestmentBalance']"
+            >Befektetési egyenleg nem elég!</mat-error
           >
         </mat-form-field>
         <mat-form-field>

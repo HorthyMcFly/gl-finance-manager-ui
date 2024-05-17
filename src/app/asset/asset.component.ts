@@ -4,9 +4,16 @@ import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { AssetService } from './asset.service';
 import { MatTableModule } from '@angular/material/table';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  AsyncValidatorFn,
+  FormBuilder,
+  ReactiveFormsModule,
+  ValidationErrors,
+  Validators,
+} from '@angular/forms';
 import { AssetDto, AssetType } from '../../models/Api';
-import { BehaviorSubject, first } from 'rxjs';
+import { BehaviorSubject, Observable, first, map, take } from 'rxjs';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatNativeDateModule } from '@angular/material/core';
@@ -78,30 +85,35 @@ export class AssetComponent implements OnInit {
   };
 
   assetSources = [
-    { type: 'INVESTMENT_BALANCE', label: 'Szabad pénz' },
+    { type: 'INVESTMENT_BALANCE', label: 'Befektetési egyenleg' },
     { type: 'NEW', label: 'Külső' },
   ] as AssetSource[];
 
   assetTypes: AssetType[] = [];
 
-  addAssetForm = this.formBuilder.group({
-    id: this.formBuilder.control(null as number | null),
-    amount: this.formBuilder.control(null as number | null, [
-      Validators.required,
-      Validators.min(this.VALIDATION_VALUES.amount.MIN),
-      Validators.max(this.VALIDATION_VALUES.amount.MAX),
-    ]),
-    name: this.formBuilder.nonNullable.control('', [
-      Validators.required,
-      Validators.minLength(this.VALIDATION_VALUES.name.MIN_LENGTH),
-      Validators.maxLength(this.VALIDATION_VALUES.name.MAX_LENGTH),
-    ]),
-    source: this.formBuilder.nonNullable.control<AssetSource>(this.assetSources[0], Validators.required),
-    assetType: this.formBuilder.control(null as AssetType | null, Validators.required),
-    maturityDate: this.formBuilder.control(null as Date | null, Validators.required),
-    interestRate: this.formBuilder.control(null as number | null, Validators.required),
-    interestPaymentMonth: this.formBuilder.control(null as number | null, Validators.required),
-  });
+  addAssetForm = this.formBuilder.group(
+    {
+      id: this.formBuilder.control(null as number | null),
+      amount: this.formBuilder.control(null as number | null, [
+        Validators.required,
+        Validators.min(this.VALIDATION_VALUES.amount.MIN),
+        Validators.max(this.VALIDATION_VALUES.amount.MAX),
+      ]),
+      name: this.formBuilder.nonNullable.control('', [
+        Validators.required,
+        Validators.minLength(this.VALIDATION_VALUES.name.MIN_LENGTH),
+        Validators.maxLength(this.VALIDATION_VALUES.name.MAX_LENGTH),
+      ]),
+      source: this.formBuilder.nonNullable.control<AssetSource>(this.assetSources[0], Validators.required),
+      assetType: this.formBuilder.control(null as AssetType | null, Validators.required),
+      maturityDate: this.formBuilder.control(null as Date | null, Validators.required),
+      interestRate: this.formBuilder.control(null as number | null, Validators.required),
+      interestPaymentMonth: this.formBuilder.control(null as number | null, Validators.required),
+    },
+    {
+      asyncValidators: [this.amountExceedsInvestmentBalanceValidator()],
+    }
+  );
 
   underEdit$ = new BehaviorSubject(false);
   addAssetFormVisible$ = new BehaviorSubject(false);
@@ -155,5 +167,30 @@ export class AssetComponent implements OnInit {
     } else {
       this.addAssetForm.controls.interestPaymentMonth.disable();
     }
+  }
+
+  amountExceedsInvestmentBalanceValidator(): AsyncValidatorFn {
+    return (control: AbstractControl): Observable<ValidationErrors | null> => {
+      const formGroup = control as typeof this.addAssetForm;
+      const sourceControl = formGroup.controls.source;
+      const amountControl = formGroup.controls.amount;
+      return this.balanceService.balance$.pipe(
+        map((balance) => {
+          if (sourceControl.value.type === 'INVESTMENT_BALANCE') {
+            if (
+              amountControl.value !== null &&
+              balance?.investmentBalance !== undefined &&
+              amountControl.value > balance?.investmentBalance
+            ) {
+              amountControl.setErrors({ amountExceedsInvestmentBalance: true });
+              return { amountExceedsInvestmentBalance: true };
+            }
+          }
+          amountControl.setErrors(null);
+          return null;
+        }),
+        take(1)
+      );
+    };
   }
 }

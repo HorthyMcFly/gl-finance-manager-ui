@@ -10,16 +10,11 @@ export class BalanceService {
   #loadBalance = new BehaviorSubject<void>(undefined);
   loadBalance$ = this.#loadBalance.asObservable();
 
-  #balance = new BehaviorSubject(null as BalanceDto | null);
   balance$ = this.loadBalance$.pipe(
     switchMap(() => {
-      return this.http.get<BalanceDto>('/api/balance').pipe(
-        first(),
-        tap((balance) => this.#balance.next(balance)),
-        shareReplay({ bufferSize: 1, refCount: true }),
-        switchMap(() => this.#balance)
-      );
-    })
+      return this.http.get<BalanceDto>('/api/balance').pipe(first());
+    }),
+    shareReplay({ bufferSize: 1, refCount: true })
   );
 
   constructor(private http: HttpClient) {}
