@@ -24,4 +24,19 @@ export class AssetService {
   addAsset(assetDto: AssetDto) {
     this.#assets.next([...(this.#assets.value ?? []), assetDto]);
   }
+
+  sellAsset(assetDto: AssetDto) {
+    return this.http.put<AssetDto>('api/assets/sell', assetDto);
+  }
+
+  updateAsset(assetDto: AssetDto) {
+    this.#assets.next(
+      this.#assets.value?.map((asset) => {
+        if (asset.id === assetDto.id) {
+          Object.assign(asset, assetDto);
+        }
+        return asset;
+      }) ?? []
+    );
+  }
 }

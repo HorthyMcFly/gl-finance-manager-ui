@@ -13,7 +13,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { AssetDto, AssetType } from '../../models/Api';
-import { BehaviorSubject, Observable, first, map, take } from 'rxjs';
+import { BehaviorSubject, Observable, first, map, shareReplay, take, tap } from 'rxjs';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatNativeDateModule } from '@angular/material/core';
@@ -115,8 +115,30 @@ export class AssetComponent implements OnInit {
     }
   );
 
+  sellForm = this.formBuilder.group({
+    amount: this.formBuilder.control(null as number | null),
+  });
+
   underEdit$ = new BehaviorSubject(false);
   addAssetFormVisible$ = new BehaviorSubject(false);
+
+  #assetToSell$ = new BehaviorSubject(null as AssetDto | null);
+  assetToSell$ = this.#assetToSell$.pipe(
+    tap((assetDto) => {
+      this.sellForm.reset();
+      if (assetDto) {
+        this.sellForm.controls.amount.setValidators([
+          Validators.required,
+          Validators.min(this.VALIDATION_VALUES.amount.MIN),
+          Validators.max(assetDto.amount),
+        ]);
+        this.underEdit$.next(true);
+      } else {
+        this.underEdit$.next(false);
+      }
+    }),
+    shareReplay({ bufferSize: 1, refCount: true })
+  );
 
   constructor(
     public assetService: AssetService,
@@ -192,5 +214,23 @@ export class AssetComponent implements OnInit {
         take(1)
       );
     };
+  }
+
+  showSellForm(sellAsset: AssetDto) {
+    this.#assetToSell$.next(sellAsset);
+  }
+
+  resetSell() {
+    this.#assetToSell$.next(null);
+  }
+
+  sellAsset(assetToSell: AssetDto) {
+    if (!this.sellForm.valid) return;
+    const saveObject = { ...assetToSell, amount: assetToSell.amount - this.sellForm.controls.amount.value! };
+    this.assetService.sellAsset(saveObject).subscribe((modifiedAsset) => {
+      this.assetService.updateAsset(modifiedAsset);
+      this.resetSell();
+      this.balanceService.reloadBalance();
+    });
   }
 }
