@@ -126,14 +126,20 @@ export class AssetComponent implements OnInit {
   assetToSell$ = this.#assetToSell$.pipe(
     tap((assetDto) => {
       this.sellForm.reset();
+      const amountControl = this.sellForm.controls.amount;
       if (assetDto) {
-        this.sellForm.controls.amount.setValidators([
+        amountControl.setValidators([
           Validators.required,
           Validators.min(this.VALIDATION_VALUES.amount.MIN),
           Validators.max(assetDto.amount),
         ]);
+        if (assetDto.assetType.type === 'Lekötött betét') {
+          amountControl.setValue(assetDto.amount);
+          amountControl.disable();
+        }
         this.underEdit$.next(true);
       } else {
+        amountControl.enable();
         this.underEdit$.next(false);
       }
     }),
@@ -226,11 +232,20 @@ export class AssetComponent implements OnInit {
 
   sellAsset(assetToSell: AssetDto) {
     if (!this.sellForm.valid) return;
-    const saveObject = { ...assetToSell, amount: assetToSell.amount - this.sellForm.controls.amount.value! };
-    this.assetService.sellAsset(saveObject).subscribe((modifiedAsset) => {
-      this.assetService.updateAsset(modifiedAsset);
-      this.resetSell();
-      this.balanceService.reloadBalance();
-    });
+    const amountDifference = assetToSell.amount - this.sellForm.controls.amount.value!;
+    if (amountDifference > 1) {
+      const saveObject = { ...assetToSell, amount: amountDifference };
+      this.assetService.sellAsset(saveObject).subscribe((modifiedAsset) => {
+        this.assetService.updateAsset(modifiedAsset);
+        this.resetSell();
+        this.balanceService.reloadBalance();
+      });
+    } else {
+      this.assetService.deleteAsset(assetToSell.id!).subscribe(() => {
+        this.assetService.removeAsset(assetToSell.id!);
+        this.resetSell();
+        this.balanceService.reloadBalance();
+      });
+    }
   }
 }

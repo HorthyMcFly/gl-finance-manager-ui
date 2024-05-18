@@ -39,4 +39,12 @@ export class AssetService {
       }) ?? []
     );
   }
+
+  deleteAsset(assetId: number) {
+    return this.http.delete<void>(`api/assets/${assetId}`);
+  }
+
+  removeAsset(assetId: number) {
+    this.#assets.next(this.#assets.value?.filter((asset) => asset.id !== assetId) ?? []);
+  }
 }
