@@ -1,11 +1,10 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, map, shareReplay, switchMap, tap } from 'rxjs';
-import { AssetDto, AssetType } from '../../models/Api';
+import { AssetDto, AssetInvestmentBalanceDto, AssetType } from '../../models/Api';
 
 @Injectable()
 export class AssetService {
-
   #assets = new BehaviorSubject(null as AssetDto[] | null);
   assets$ = this.http.get<AssetDto[]>('/api/assets').pipe(
     tap((assets) => this.#assets.next(assets)),
@@ -15,7 +14,7 @@ export class AssetService {
 
   assetTypes$ = this.http.get<AssetType[]>('api/assets/asset-types');
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   createAsset(assetDto: AssetDto) {
     return this.http.post<AssetDto>('api/assets', assetDto);
@@ -46,5 +45,9 @@ export class AssetService {
 
   removeAsset(assetId: number) {
     this.#assets.next(this.#assets.value?.filter((asset) => asset.id !== assetId) ?? []);
+  }
+
+  investmentBalanceToIncome(amount: number) {
+    return this.http.post<void>('api/assets/investment-balance-to-income', { amount } as AssetInvestmentBalanceDto);
   }
 }

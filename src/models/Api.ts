@@ -76,7 +76,7 @@ export interface AssetDto {
    * @maxLength 30
    */
   name: string;
-  useInvestmentBalance: boolean;
+  useInvestmentBalance: boolean | null;
   assetType: AssetType;
   /** @format date */
   maturityDate: string | null;
@@ -136,6 +136,16 @@ export interface LoginResponse {
   role: string;
   /** JWT access token */
   accessToken: string;
+}
+
+export interface AssetInvestmentBalanceDto {
+  /**
+   * @min 1
+   * @exclusiveMin false
+   * @max 1000000000
+   * @exclusiveMax false
+   */
+  amount: number;
 }
 
 export interface FmPeriod {

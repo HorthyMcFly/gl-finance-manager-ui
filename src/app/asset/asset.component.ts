@@ -79,7 +79,7 @@ export class AssetComponent implements OnInit {
       MIN: new Date(),
     },
     interestRate: {
-      MIN: 0,
+      MIN: 0.01,
       MAX: 1000,
     },
   };
@@ -107,7 +107,11 @@ export class AssetComponent implements OnInit {
       source: this.formBuilder.nonNullable.control<AssetSource>(this.assetSources[0], Validators.required),
       assetType: this.formBuilder.control(null as AssetType | null, Validators.required),
       maturityDate: this.formBuilder.control(null as Date | null, Validators.required),
-      interestRate: this.formBuilder.control(null as number | null, Validators.required),
+      interestRate: this.formBuilder.control(null as number | null, [
+        Validators.required,
+        Validators.min(this.VALIDATION_VALUES.interestRate.MIN),
+        Validators.max(this.VALIDATION_VALUES.interestRate.MAX),
+      ]),
       interestPaymentMonth: this.formBuilder.control(null as number | null, Validators.required),
     },
     {
@@ -131,7 +135,7 @@ export class AssetComponent implements OnInit {
         amountControl.setValidators([
           Validators.required,
           Validators.min(this.VALIDATION_VALUES.amount.MIN),
-          Validators.max(assetDto.amount),
+          Validators.max(Math.min(assetDto.amount, this.VALIDATION_VALUES.amount.MAX)),
         ]);
         if (assetDto.assetType.type === 'Lekötött betét') {
           amountControl.setValue(assetDto.amount);
@@ -232,20 +236,43 @@ export class AssetComponent implements OnInit {
 
   sellAsset(assetToSell: AssetDto) {
     if (!this.sellForm.valid) return;
-    const amountDifference = assetToSell.amount - this.sellForm.controls.amount.value!;
-    if (amountDifference > 1) {
-      const saveObject = { ...assetToSell, amount: amountDifference };
-      this.assetService.sellAsset(saveObject).subscribe((modifiedAsset) => {
-        this.assetService.updateAsset(modifiedAsset);
+    if (assetToSell.assetType.type === 'INVESTMENT_BALANCE') {
+      this.assetService.investmentBalanceToIncome(this.sellForm.controls.amount.value!).subscribe(() => {
         this.resetSell();
         this.balanceService.reloadBalance();
       });
     } else {
-      this.assetService.deleteAsset(assetToSell.id!).subscribe(() => {
-        this.assetService.removeAsset(assetToSell.id!);
-        this.resetSell();
-        this.balanceService.reloadBalance();
-      });
+      const amountDifference = assetToSell.amount - this.sellForm.controls.amount.value!;
+      if (amountDifference > 1) {
+        const saveObject = { ...assetToSell, amount: amountDifference };
+        this.assetService.sellAsset(saveObject).subscribe((modifiedAsset) => {
+          this.assetService.updateAsset(modifiedAsset);
+          this.resetSell();
+          this.balanceService.reloadBalance();
+        });
+      } else {
+        this.assetService.deleteAsset(assetToSell.id!).subscribe(() => {
+          this.assetService.removeAsset(assetToSell.id!);
+          this.resetSell();
+          this.balanceService.reloadBalance();
+        });
+      }
     }
+  }
+
+  investmentBalancetoIncome(investmentBalance: number) {
+    const investmentBalanceAssetDto: AssetDto = {
+      id: null,
+      amount: investmentBalance,
+      name: 'technical',
+      useInvestmentBalance: null,
+      assetType: {
+        type: 'INVESTMENT_BALANCE'
+      },
+      maturityDate: null,
+      interestRate: 0,
+      interestPaymentMonth: null
+    };
+    this.showSellForm(investmentBalanceAssetDto);
   }
 }
