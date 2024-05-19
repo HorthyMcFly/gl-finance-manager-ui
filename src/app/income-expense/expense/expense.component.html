@@ -35,10 +35,10 @@
           <mat-label>Cél</mat-label>
           <input matInput formControlName="recipient" />
           <mat-error *ngIf="expenseForm.controls.recipient.errors?.['required']">Forrás megadása kötelező!</mat-error>
-          <mat-error *ngIf="expenseForm.controls.amount.errors?.['minlength']"
+          <mat-error *ngIf="expenseForm.controls.recipient.errors?.['minlength']"
             >Minimum {{ VALIDATION_VALUES.recipient.MIN_LENGTH }} karakter!</mat-error
           >
-          <mat-error *ngIf="expenseForm.controls.amount.errors?.['maxlength']"
+          <mat-error *ngIf="expenseForm.controls.recipient.errors?.['maxlength']"
             >Maximum {{ VALIDATION_VALUES.recipient.MAX_LENGTH }} karakter!</mat-error
           >
         </mat-form-field>

@@ -35,10 +35,10 @@
           <mat-label>Forrás</mat-label>
           <input matInput formControlName="source" />
           <mat-error *ngIf="incomeForm.controls.source.errors?.['required']">Forrás megadása kötelező!</mat-error>
-          <mat-error *ngIf="incomeForm.controls.amount.errors?.['minlength']"
+          <mat-error *ngIf="incomeForm.controls.source.errors?.['minlength']"
             >Minimum {{ VALIDATION_VALUES.source.MIN_LENGTH }} karakter!</mat-error
           >
-          <mat-error *ngIf="incomeForm.controls.amount.errors?.['maxlength']"
+          <mat-error *ngIf="incomeForm.controls.source.errors?.['maxlength']"
             >Maximum {{ VALIDATION_VALUES.source.MAX_LENGTH }} karakter!</mat-error
           >
         </mat-form-field>
