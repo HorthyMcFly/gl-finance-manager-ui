@@ -10,7 +10,7 @@ import { MatInputModule } from '@angular/material/input';
 import { IncomeExpenseService } from '../income-expense.service';
 import { BalanceService } from '../../balance/balance.service';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { BehaviorSubject, first, map, switchMap, tap } from 'rxjs';
+import { BehaviorSubject, first, map, tap } from 'rxjs';
 import { ExpenseCategory, ExpenseDto } from '../../../models/Api';
 import { DeleteDialogComponent } from '../../dialog/delete-dialog.component';
 import { MatSelectModule } from '@angular/material/select';
@@ -36,7 +36,7 @@ import { MatSelectModule } from '@angular/material/select';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ExpenseComponent implements OnInit {
-  columns: string[] = ['amount', 'recipient', 'category', 'comment', 'edit'];
+  columns: string[] = ['amount', 'recipient', 'category', 'comment', 'relatedLoanName', 'edit'];
 
   VALIDATION_VALUES = {
     amount: {
@@ -68,7 +68,7 @@ export class ExpenseComponent implements OnInit {
     comment: this.formBuilder.control(null as string | null, [
       Validators.maxLength(this.VALIDATION_VALUES.comment.MAX_LENGTH),
     ]),
-    hasRelatedLoan: this.formBuilder.nonNullable.control(false),
+    relatedLoanName: this.formBuilder.control(null as null | string),
   });
 
   #formValueExpense$ = new BehaviorSubject<ExpenseDto | null>(null);
@@ -106,7 +106,7 @@ export class ExpenseComponent implements OnInit {
       recipient: '',
       expenseCategory: this.expenseCategories[0],
       comment: null,
-      hasRelatedLoan: false,
+      relatedLoanName: null,
     });
   }
 
@@ -142,7 +142,7 @@ export class ExpenseComponent implements OnInit {
       recipient: formValue.recipient!,
       expenseCategory: formValue.expenseCategory!,
       comment: formValue.comment,
-      hasRelatedLoan: formValue.hasRelatedLoan,
+      relatedLoanName: formValue.relatedLoanName,
     };
 
     if (saveObject.id === null) {

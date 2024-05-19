@@ -11,8 +11,18 @@
     <strong class="me-1">Havi törlesztőrészlet:</strong>
     <span>{{ loan.monthlyRepayment | currency : 'HUF' }}</span>
   </div>
-  <div class="flex justify-center items-center md:justify-end">
-    <button mat-raised-button color="primary" [disabled]="true">Szerkesztés</button>
+  <div class="flex justify-center items-center md:justify-end gap-2">
+    <button mat-raised-button color="primary" [disabled]="loanService.underEdit$ | async" (click)="editLoan.emit(loan)">
+      Szerkesztés
+    </button>
+    <button
+      mat-raised-button
+      color="warn"
+      [disabled]="loanService.underEdit$ | async"
+      (click)="deleteLoan.emit(loan)"
+    >
+      Törlés
+    </button>
   </div>
 </div>
 

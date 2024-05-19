@@ -1,7 +1,8 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LoanDto } from '../../../models/Api';
 import { MatButtonModule } from '@angular/material/button';
+import { LoanService } from '../loan.service';
 
 interface LoanRundown {
   outstandingByYear: number[];
@@ -19,9 +20,11 @@ interface LoanRundown {
 export class LoanDetailsComponent implements OnInit {
 
   @Input({ required: true }) loan!: LoanDto;
+  @Output() editLoan = new EventEmitter<LoanDto>();
+  @Output() deleteLoan = new EventEmitter<LoanDto>();
   loanRundown: LoanRundown | undefined;
 
-  constructor() {}
+  constructor(public loanService: LoanService) {}
 
   ngOnInit(): void {
     this.loanRundown = this.calculateLoanDetails(

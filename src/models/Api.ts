@@ -9,6 +9,35 @@
  * ---------------------------------------------------------------
  */
 
+export interface LoanDto {
+  /** @format int32 */
+  id: number | null;
+  /**
+   * @min 1
+   * @exclusiveMin false
+   * @max 1000000000
+   * @exclusiveMax false
+   */
+  amount: number;
+  /**
+   * @minLength 1
+   * @maxLength 30
+   */
+  name: string;
+  /**
+   * @min 0.01
+   * @exclusiveMin false
+   * @max 1000
+   * @exclusiveMax false
+   */
+  interestRate: number;
+  /**
+   * @min 1
+   * @exclusiveMin false
+   */
+  monthlyRepayment: number;
+}
+
 export interface IncomeDto {
   /** @format int32 */
   id: number | null;
@@ -58,7 +87,7 @@ export interface ExpenseDto {
    * @maxLength 100
    */
   comment: string | null;
-  hasRelatedLoan: boolean;
+  relatedLoanName: string | null;
 }
 
 export interface AssetDto {
@@ -81,7 +110,7 @@ export interface AssetDto {
   /** @format date */
   maturityDate: string | null;
   /**
-   * @min 0
+   * @min 0.01
    * @exclusiveMin false
    * @max 1000
    * @exclusiveMax false
@@ -157,15 +186,6 @@ export interface FmPeriod {
   /** @format date */
   endDate?: string;
   active?: boolean;
-}
-
-export interface LoanDto {
-  /** @format int32 */
-  id?: number;
-  amount?: number;
-  name?: string;
-  interestRate?: number;
-  monthlyRepayment?: number;
 }
 
 export interface AssetSummary {

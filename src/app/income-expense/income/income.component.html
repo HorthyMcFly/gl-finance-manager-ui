@@ -8,7 +8,7 @@
         <button
           mat-raised-button
           color="primary"
-          [disabled]="incomeExpenseService.underEdit$ | async"
+          [disabled]="incomeExpenseService.buttonsDisabled$ | async"
           (click)="addNew()"
         >
           Bevétel hozzáadása
@@ -74,7 +74,7 @@
               type="button"
               mat-raised-button
               color="primary"
-              [disabled]="incomeExpenseService.underEdit$ | async"
+              [disabled]="incomeExpenseService.buttonsDisabled$ | async"
               (click)="modifyIncome(element)"
             >
               Szerkesztés
@@ -83,7 +83,7 @@
               type="button"
               mat-raised-button
               color="warn"
-              [disabled]="incomeExpenseService.underEdit$ | async"
+              [disabled]="incomeExpenseService.buttonsDisabled$ | async"
               (click)="deleteIncome(element.id)"
             >
               Törlés

@@ -8,7 +8,7 @@
         <button
           mat-raised-button
           color="primary"
-          [disabled]="incomeExpenseService.underEdit$ | async"
+          [disabled]="incomeExpenseService.buttonsDisabled$ | async"
           (click)="addNew()"
         >
           Kiadás hozzáadása
@@ -78,6 +78,10 @@
         <th mat-header-cell *matHeaderCellDef>Megjegyzés</th>
         <td mat-cell *matCellDef="let element">{{ element.comment }}</td>
       </ng-container>
+      <ng-container matColumnDef="relatedLoanName">
+        <th mat-header-cell *matHeaderCellDef>Kapcsolódó hitel</th>
+        <td mat-cell *matCellDef="let element">{{ element.relatedLoanName }}</td>
+      </ng-container>
       <ng-container matColumnDef="edit">
         <th mat-header-cell *matHeaderCellDef></th>
         <td mat-cell *matCellDef="let element">
@@ -86,7 +90,7 @@
               type="button"
               mat-raised-button
               color="primary"
-              [disabled]="(incomeExpenseService.underEdit$ | async) || element.hasRelatedLoan"
+              [disabled]="(incomeExpenseService.buttonsDisabled$ | async) || element.relatedLoanName"
               (click)="modifyExpense(element)"
             >
               Szerkesztés
@@ -95,7 +99,7 @@
               type="button"
               mat-raised-button
               color="warn"
-              [disabled]="(incomeExpenseService.underEdit$ | async)  || element.hasRelatedLoan"
+              [disabled]="(incomeExpenseService.buttonsDisabled$ | async) || element.relatedLoanName"
               (click)="deleteExpense(element.id)"
             >
               Törlés
