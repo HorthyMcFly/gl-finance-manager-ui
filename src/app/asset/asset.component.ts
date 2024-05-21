@@ -20,6 +20,7 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { BalanceService } from '../balance/balance.service';
+import { PeriodService } from '../period/period.service';
 
 type AssetSourceType = 'INVESTMENT_BALANCE' | 'NEW';
 interface AssetSource {
@@ -74,9 +75,6 @@ export class AssetComponent implements OnInit {
     name: {
       MIN_LENGTH: 1,
       MAX_LENGTH: 30,
-    },
-    maturityDate: {
-      MIN: new Date(),
     },
     interestRate: {
       MIN: 0.01,
@@ -153,6 +151,7 @@ export class AssetComponent implements OnInit {
   constructor(
     public assetService: AssetService,
     public balanceService: BalanceService,
+    public periodService: PeriodService,
     private formBuilder: FormBuilder
   ) {}
 

@@ -105,7 +105,7 @@
             matInput
             formControlName="maturityDate"
             [matDatepicker]="maturityDatePicker"
-            [min]="VALIDATION_VALUES.maturityDate.MIN"
+            [min]="(periodService.activePeriod$ | async)?.startDate"
             placeholder="ÉÉÉÉ. HH. NN."
           />
           <mat-datepicker-toggle matIconSuffix [for]="maturityDatePicker"></mat-datepicker-toggle>

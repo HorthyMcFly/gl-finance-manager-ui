@@ -9,6 +9,7 @@ import { first, shareReplay, tap } from 'rxjs';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { IncomeComponent } from './income/income.component';
 import { ExpenseComponent } from './expense/expense.component';
+import { PeriodService } from '../period/period.service';
 
 @Component({
   selector: 'glfm-income-expense',
@@ -20,20 +21,21 @@ import { ExpenseComponent } from './expense/expense.component';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class IncomeExpenseComponent {
-  periods$ = this.incomeExpenseService.periods$.pipe(
+  periods$ = this.periodService.periods$.pipe(
     tap((periods) => {
       const activePeriod = periods?.find((period) => period.active) ?? null;
       this.incomeExpenseService.setSelectedPeriod(activePeriod);
       this.periodSelectControl.setValue(activePeriod);
     }),
-    shareReplay({ bufferSize: 1, refCount: true})
+    shareReplay({ bufferSize: 1, refCount: true })
   );
 
   periodSelectControl = this.formBuilder.control(null as FmPeriod | null);
 
   constructor(
-    public incomeExpenseService: IncomeExpenseService,
     public balanceService: BalanceService,
+    public incomeExpenseService: IncomeExpenseService,
+    public periodService: PeriodService,
     private formBuilder: FormBuilder
   ) {}
 }

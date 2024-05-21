@@ -1,103 +1,111 @@
-<mat-card class="m-5">
-  <mat-card-header class="justify-end items-center gap-2 flex-col sm:flex-row">
-    <div class="me-auto">
-      <h1>Felhasználók kezelése</h1>
-    </div>
-    <form [formGroup]="searchForm">
-      <mat-form-field>
-        <mat-label>Keresés</mat-label>
-        <input matInput formControlName="searchUsername" />
-      </mat-form-field>
-      <mat-checkbox formControlName="admin">Admin felhasználók</mat-checkbox>
-    </form>
-  </mat-card-header>
-  <mat-card-content>
-    <div class="flex justify-end items-center gap-2">
-      <div *ngIf="!(addNewMode$ | async)">
-        <button mat-raised-button color="primary" (click)="setAddNewMode(true)">Felhasználó hozzáadása</button>
+<div class="m-5">
+  <h1>Adminisztrátor funkciók</h1>
+  <mat-card class="mb-2">
+    <mat-card-header>
+      <h2>Aktív periódus zárása</h2>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="flex justify-center mb-2">
+        <span>Aktív periódus: {{ (periodService.activePeriod$ | async)?.name }}</span>
       </div>
-      <form
-        *ngIf="addNewMode$ | async"
-        [formGroup]="addNewForm"
-        (ngSubmit)="createUser()"
-        class="flex justify-end items-center gap-2"
-      >
+      <div class="flex justify-center">
+        <button mat-raised-button type="button" color="accent" (click)="closeActivePeriod()">Periódus zárása</button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+  <mat-card>
+    <mat-card-header class="justify-end items-center gap-2 flex-col sm:flex-row">
+      <div class="me-auto">
+        <h2>Felhasználók kezelése</h2>
+      </div>
+      <form [formGroup]="searchForm">
         <mat-form-field>
-          <mat-label>Felhasználónév</mat-label>
-          <input matInput formControlName="username" />
-          <mat-error *ngIf="addNewForm.controls.username.errors?.['required']"
-            >Felhasználónév megadása kötelező!</mat-error
-          >
-          <mat-error *ngIf="addNewForm.controls.username.errors?.['minlength']"
-            >Minimum 5 karakter!</mat-error
-          >
-          <mat-error *ngIf="addNewForm.controls.username.errors?.['maxlength']"
-            >Maximum 20 karakter!</mat-error
-          >
+          <mat-label>Keresés</mat-label>
+          <input matInput formControlName="searchUsername" />
         </mat-form-field>
-        <mat-checkbox formControlName="admin">Admin</mat-checkbox>
-        <button mat-raised-button color="primary" type="submit">OK</button>
-        <button mat-raised-button (click)="setAddNewMode(false)" type="button">Mégsem</button>
+        <mat-checkbox formControlName="admin">Admin felhasználók</mat-checkbox>
       </form>
-    </div>
-    <div class="flex justify-end items-center gap-2">
-      <form
-        *ngIf="editMode$ | async"
-        [formGroup]="editForm"
-        (ngSubmit)="modifyUser()"
-        class="flex justify-end items-center gap-2"
-      >
-        <mat-form-field>
-          <mat-label>Felhasználónév</mat-label>
-          <input matInput formControlName="username" />
-          <mat-error *ngIf="editForm.controls.username.errors?.['required']"
-            >Felhasználónév megadása kötelező!</mat-error
-          >
-          <mat-error *ngIf="editForm.controls.username.errors?.['minlength']"
-            >Minimum 5 karakter!</mat-error
-          >
-          <mat-error *ngIf="editForm.controls.username.errors?.['maxlength']"
-            >Maximum 20 karakter!</mat-error
-          >
-        </mat-form-field>
-        <mat-checkbox formControlName="admin">Admin</mat-checkbox>
-        <mat-checkbox formControlName="active">Aktív</mat-checkbox>
-        <mat-checkbox formControlName="resetPassword">Jelszó visszaállítása alapértelmezettre</mat-checkbox>
-        <button mat-raised-button color="primary" type="submit">OK</button>
-        <button mat-raised-button (click)="setUnderEditId(null)" type="button">Mégsem</button>
-      </form>
-    </div>
-    <table mat-table [dataSource]="dataSource$">
-      <ng-container matColumnDef="username">
-        <th mat-header-cell *matHeaderCellDef>Felhasználónév</th>
-        <td mat-cell *matCellDef="let element">{{ element.username }}</td>
-      </ng-container>
-      <ng-container matColumnDef="admin">
-        <th mat-header-cell *matHeaderCellDef>Admin</th>
-        <td mat-cell *matCellDef="let element">{{ element.admin ? 'Igen' : 'Nem' }}</td>
-      </ng-container>
-      <ng-container matColumnDef="active">
-        <th mat-header-cell *matHeaderCellDef>Aktív</th>
-        <td mat-cell *matCellDef="let element">{{ element.active ? 'Igen' : 'Nem' }}</td>
-      </ng-container>
-      <ng-container matColumnDef="edit">
-        <th mat-header-cell *matHeaderCellDef></th>
-        <td mat-cell *matCellDef="let element">
-          <div class="flex justify-center">
-            <button
-              mat-raised-button
-              color="primary"
-              (click)="setUnderEditId(element.id)"
-              [disabled]="editMode$ | async"
+    </mat-card-header>
+    <mat-card-content>
+      <div class="flex justify-end items-center gap-2">
+        <div *ngIf="!(addNewMode$ | async)">
+          <button mat-raised-button color="primary" (click)="setAddNewMode(true)">Felhasználó hozzáadása</button>
+        </div>
+        <form
+          *ngIf="addNewMode$ | async"
+          [formGroup]="addNewForm"
+          (ngSubmit)="createUser()"
+          class="flex justify-end items-center gap-2"
+        >
+          <mat-form-field>
+            <mat-label>Felhasználónév</mat-label>
+            <input matInput formControlName="username" />
+            <mat-error *ngIf="addNewForm.controls.username.errors?.['required']"
+              >Felhasználónév megadása kötelező!</mat-error
             >
-              Szerkesztés
-            </button>
-          </div>
-        </td>
-      </ng-container>
+            <mat-error *ngIf="addNewForm.controls.username.errors?.['minlength']">Minimum 5 karakter!</mat-error>
+            <mat-error *ngIf="addNewForm.controls.username.errors?.['maxlength']">Maximum 20 karakter!</mat-error>
+          </mat-form-field>
+          <mat-checkbox formControlName="admin">Admin</mat-checkbox>
+          <button mat-raised-button color="primary" type="submit">OK</button>
+          <button mat-raised-button (click)="setAddNewMode(false)" type="button">Mégsem</button>
+        </form>
+      </div>
+      <div class="flex justify-end items-center gap-2">
+        <form
+          *ngIf="editMode$ | async"
+          [formGroup]="editForm"
+          (ngSubmit)="modifyUser()"
+          class="flex justify-end items-center gap-2"
+        >
+          <mat-form-field>
+            <mat-label>Felhasználónév</mat-label>
+            <input matInput formControlName="username" />
+            <mat-error *ngIf="editForm.controls.username.errors?.['required']"
+              >Felhasználónév megadása kötelező!</mat-error
+            >
+            <mat-error *ngIf="editForm.controls.username.errors?.['minlength']">Minimum 5 karakter!</mat-error>
+            <mat-error *ngIf="editForm.controls.username.errors?.['maxlength']">Maximum 20 karakter!</mat-error>
+          </mat-form-field>
+          <mat-checkbox formControlName="admin">Admin</mat-checkbox>
+          <mat-checkbox formControlName="active">Aktív</mat-checkbox>
+          <mat-checkbox formControlName="resetPassword">Jelszó visszaállítása alapértelmezettre</mat-checkbox>
+          <button mat-raised-button color="primary" type="submit">OK</button>
+          <button mat-raised-button (click)="setUnderEditId(null)" type="button">Mégsem</button>
+        </form>
+      </div>
+      <table mat-table [dataSource]="dataSource$">
+        <ng-container matColumnDef="username">
+          <th mat-header-cell *matHeaderCellDef>Felhasználónév</th>
+          <td mat-cell *matCellDef="let element">{{ element.username }}</td>
+        </ng-container>
+        <ng-container matColumnDef="admin">
+          <th mat-header-cell *matHeaderCellDef>Admin</th>
+          <td mat-cell *matCellDef="let element">{{ element.admin ? 'Igen' : 'Nem' }}</td>
+        </ng-container>
+        <ng-container matColumnDef="active">
+          <th mat-header-cell *matHeaderCellDef>Aktív</th>
+          <td mat-cell *matCellDef="let element">{{ element.active ? 'Igen' : 'Nem' }}</td>
+        </ng-container>
+        <ng-container matColumnDef="edit">
+          <th mat-header-cell *matHeaderCellDef></th>
+          <td mat-cell *matCellDef="let element">
+            <div class="flex justify-center">
+              <button
+                mat-raised-button
+                color="primary"
+                (click)="setUnderEditId(element.id)"
+                [disabled]="editMode$ | async"
+              >
+                Szerkesztés
+              </button>
+            </div>
+          </td>
+        </ng-container>
 
-      <tr mat-header-row *matHeaderRowDef="columns"></tr>
-      <tr mat-row *matRowDef="let row; columns: columns"></tr>
-    </table>
-  </mat-card-content>
-</mat-card>
+        <tr mat-header-row *matHeaderRowDef="columns"></tr>
+        <tr mat-row *matRowDef="let row; columns: columns"></tr>
+      </table>
+    </mat-card-content>
+  </mat-card>
+</div>

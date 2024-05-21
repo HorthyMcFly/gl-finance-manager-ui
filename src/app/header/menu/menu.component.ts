@@ -46,7 +46,7 @@ export class MenuComponent {
   private _adminMenuItems: MenuItem[] = [
     {
       path: 'admin',
-      label: 'Felhasználók kezelése',
+      label: 'Admin funkciók',
       icon: 'admin_panel_settings',
     },
   ];

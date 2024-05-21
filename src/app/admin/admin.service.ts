@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, map, shareReplay, switchMap, tap } from 'rxjs';
-import { FmUser } from '../../models/Api';
+import { BehaviorSubject, first, map, shareReplay, switchMap, tap } from 'rxjs';
+import { FmPeriod, FmUser } from '../../models/Api';
 
 @Injectable()
 export class AdminService {
@@ -30,4 +30,9 @@ export class AdminService {
     const users = this.#users$.value ?? [];
     this.#users$.next(users.map((u) => (u.id === user.id ? user : u)));
   }
+
+  closeActivePeriod() {
+    return this.http.post('api/admin/close-active-period', {});
+  }
+  
 }

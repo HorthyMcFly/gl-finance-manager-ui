@@ -10,6 +10,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { PeriodService } from '../period/period.service';
 
 @Component({
   selector: 'glfm-admin',
@@ -96,7 +97,7 @@ export class AdminComponent {
     }))
   }));
 
-  constructor(public adminService: AdminService, private formBuilder: FormBuilder) {}
+  constructor(public adminService: AdminService, public periodService: PeriodService, private formBuilder: FormBuilder) {}
 
   setAddNewMode(addNewMode: boolean) {
     this.#addNewMode$.next(addNewMode);
@@ -137,6 +138,12 @@ export class AdminComponent {
     this.adminService.modifyUser(user).subscribe(() => {
       this.adminService.updateUser(user);
       this.setUnderEditId(null);
+    });
+  }
+
+  closeActivePeriod() {
+    this.adminService.closeActivePeriod().subscribe(() => {
+      this.periodService.loadActivePeriod();
     });
   }
 }
