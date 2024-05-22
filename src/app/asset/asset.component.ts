@@ -8,6 +8,7 @@ import {
   AbstractControl,
   AsyncValidatorFn,
   FormBuilder,
+  FormControl,
   ReactiveFormsModule,
   ValidationErrors,
   Validators,
@@ -111,9 +112,6 @@ export class AssetComponent implements OnInit {
         Validators.max(this.VALIDATION_VALUES.interestRate.MAX),
       ]),
       interestPaymentMonth: this.formBuilder.control(null as number | null, Validators.required),
-    },
-    {
-      asyncValidators: [this.amountExceedsInvestmentBalanceValidator()],
     }
   );
 
@@ -157,6 +155,8 @@ export class AssetComponent implements OnInit {
 
   ngOnInit() {
     this.assetService.assetTypes$.pipe(first()).subscribe((assetTypes) => (this.assetTypes = assetTypes));
+    this.addAssetForm.controls.amount
+      .addAsyncValidators(this.amountExceedsInvestmentBalanceValidator(this.addAssetForm.controls.source));
   }
 
   addNew() {
@@ -200,24 +200,20 @@ export class AssetComponent implements OnInit {
     }
   }
 
-  amountExceedsInvestmentBalanceValidator(): AsyncValidatorFn {
+  amountExceedsInvestmentBalanceValidator(sourceControl: FormControl<AssetSource>): AsyncValidatorFn {
     return (control: AbstractControl): Observable<ValidationErrors | null> => {
-      const formGroup = control as typeof this.addAssetForm;
-      const sourceControl = formGroup.controls.source;
-      const amountControl = formGroup.controls.amount;
       return this.balanceService.balance$.pipe(
         map((balance) => {
           if (sourceControl.value.type === 'INVESTMENT_BALANCE') {
             if (
-              amountControl.value !== null &&
-              balance?.investmentBalance !== undefined &&
-              amountControl.value > balance?.investmentBalance
+              control.value !== null &&
+              control.value > (balance?.investmentBalance ?? 0)
             ) {
-              amountControl.setErrors({ amountExceedsInvestmentBalance: true });
+              control.setErrors({ amountExceedsInvestmentBalance: true });
               return { amountExceedsInvestmentBalance: true };
             }
           }
-          amountControl.setErrors(null);
+          control.setErrors(null);
           return null;
         }),
         take(1)

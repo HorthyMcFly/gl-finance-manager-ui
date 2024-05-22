@@ -85,7 +85,7 @@
         </mat-form-field>
         <mat-form-field>
           <mat-label>Forrás</mat-label>
-          <mat-select formControlName="source">
+          <mat-select formControlName="source" (selectionChange)="addAssetForm.controls.amount.updateValueAndValidity()">
             <mat-option *ngFor="let assetSource of assetSources" [value]="assetSource">{{
               assetSource.label
             }}</mat-option>
