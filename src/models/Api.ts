@@ -64,6 +64,7 @@ export interface ExpenseCategory {
   /** @format int32 */
   id?: number;
   category?: string;
+  displayName?: string;
 }
 
 export interface ExpenseDto {
@@ -124,6 +125,7 @@ export interface AssetType {
   /** @format int32 */
   id?: number;
   type?: string;
+  displayName?: string;
 }
 
 export interface FmUser {

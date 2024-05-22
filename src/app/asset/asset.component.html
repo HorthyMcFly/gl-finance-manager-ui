@@ -30,7 +30,7 @@
         (ngSubmit)="sellAsset(assetToSell)"
         class="flex justify-center items-center gap-2 w-full"
       >
-        <mat-form-field *ngIf="assetToSell.assetType.type != 'Lekötött betét'">
+        <mat-form-field *ngIf="assetToSell.assetType.type != 'SAVINGS_ACCOUNT'">
           <mat-label>{{
             assetToSell.assetType.type === 'INVESTMENT_BALANCE' ? 'Könyvelés összege' : 'Eladás összege'
           }}</mat-label>
@@ -43,7 +43,7 @@
             >Maximum {{ assetToSell.amount | number : '1.0-2' }}!</mat-error
           >
         </mat-form-field>
-        <div *ngIf="assetToSell.assetType.type === 'Lekötött betét'">
+        <div *ngIf="assetToSell.assetType.type === 'SAVINGS_ACCOUNT'">
           <span class="font-medium me-1">Könyvelés összege:</span>{{ sellForm.controls.amount.value | currency : 'HUF' }}
         </div>
         <button mat-raised-button color="primary" type="submit">OK</button>
@@ -99,7 +99,7 @@
         <mat-form-field>
           <mat-label>Típus</mat-label>
           <mat-select formControlName="assetType" (selectionChange)="assetTypeChanged($event.value)">
-            <mat-option *ngFor="let assetType of assetTypes" [value]="assetType">{{ assetType.type }}</mat-option>
+            <mat-option *ngFor="let assetType of assetTypes" [value]="assetType">{{ assetType.displayName }}</mat-option>
           </mat-select>
           <mat-error *ngIf="addAssetForm.controls.assetType.errors?.['required']">Típus megadása kötelező!</mat-error>
         </mat-form-field>
@@ -158,7 +158,7 @@
       </ng-container>
       <ng-container matColumnDef="assetType">
         <th mat-header-cell *matHeaderCellDef>Típus</th>
-        <td mat-cell *matCellDef="let element">{{ element.assetType.type }}</td>
+        <td mat-cell *matCellDef="let element">{{ element.assetType.displayName }}</td>
       </ng-container>
       <ng-container matColumnDef="maturityDate">
         <th mat-header-cell *matHeaderCellDef>Lejárat</th>

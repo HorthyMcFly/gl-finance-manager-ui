@@ -133,7 +133,7 @@ export class AssetComponent implements OnInit {
           Validators.min(this.VALIDATION_VALUES.amount.MIN),
           Validators.max(Math.min(assetDto.amount, this.VALIDATION_VALUES.amount.MAX)),
         ]);
-        if (assetDto.assetType.type === 'Lekötött betét') {
+        if (assetDto.assetType.type === 'SAVINGS_ACCOUNT') {
           amountControl.setValue(assetDto.amount);
         }
         this.underEdit$.next(true);
@@ -191,7 +191,7 @@ export class AssetComponent implements OnInit {
 
   assetTypeChanged(assetType: AssetType) {
     this.addAssetForm.controls.interestPaymentMonth.reset();
-    if (assetType.type === 'Kötvény') {
+    if (assetType.type === 'BOND') {
       this.addAssetForm.controls.interestPaymentMonth.enable();
     } else {
       this.addAssetForm.controls.interestPaymentMonth.disable();
