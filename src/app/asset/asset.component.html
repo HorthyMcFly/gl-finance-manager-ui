@@ -4,19 +4,20 @@
   </mat-card-header>
   <mat-card-content>
     <div
-      *ngIf="(balanceService.balance$ | async)?.investmentBalance as investmentBalance"
       class="flex justify-center m-5"
     >
       <div>
         <div class="text-lg font-medium">
-          {{ 'Aktuális befektetési egyenleg: ' + (investmentBalance ?? 0 | currency : 'HUF') }}
+          {{ 'Aktuális befektetési egyenleg: ' + 
+            ((balanceService.balance$ | async)?.investmentBalance ?? 0 | currency : 'HUF') 
+          }}
         </div>
-        <div class="text-center">
+        <div *ngIf="(balanceService.balance$ | async) as balance" class="text-center">
           <button
             mat-raised-button
             color="primary"
             [disabled]="underEdit$ | async"
-            (click)="investmentBalancetoIncome(investmentBalance)"
+            (click)="investmentBalancetoIncome(balance.investmentBalance)"
           >
             Könyvelés bevételként
           </button>
@@ -29,7 +30,7 @@
         (ngSubmit)="sellAsset(assetToSell)"
         class="flex justify-center items-center gap-2 w-full"
       >
-        <mat-form-field>
+        <mat-form-field *ngIf="assetToSell.assetType.type != 'Lekötött betét'">
           <mat-label>{{
             assetToSell.assetType.type === 'INVESTMENT_BALANCE' ? 'Könyvelés összege' : 'Eladás összege'
           }}</mat-label>
@@ -42,6 +43,9 @@
             >Maximum {{ assetToSell.amount | number : '1.0-2' }}!</mat-error
           >
         </mat-form-field>
+        <div *ngIf="assetToSell.assetType.type === 'Lekötött betét'">
+          <span class="font-medium me-1">Könyvelés összege:</span>{{ sellForm.controls.amount.value | currency : 'HUF' }}
+        </div>
         <button mat-raised-button color="primary" type="submit">OK</button>
         <button mat-raised-button (click)="resetSell()" type="button">Mégsem</button>
       </form>

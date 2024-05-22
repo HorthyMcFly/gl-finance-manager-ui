@@ -135,11 +135,9 @@ export class AssetComponent implements OnInit {
         ]);
         if (assetDto.assetType.type === 'Lekötött betét') {
           amountControl.setValue(assetDto.amount);
-          amountControl.disable();
         }
         this.underEdit$.next(true);
       } else {
-        amountControl.enable();
         this.underEdit$.next(false);
       }
     }),

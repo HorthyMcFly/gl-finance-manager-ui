@@ -27,7 +27,7 @@
 </div>
 
 <div *ngIf="loanRundown">
-  <div class="text-lg text-semibold mb-2">Hitel lefutása a hátralévő időszakra:</div>
+  <div class="text-lg font-semibold mb-2">Hitel lefutása a hátralévő időszakra:</div>
   <div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6">
     <div *ngFor="let outstandingByYear of loanRundown.outstandingByYear; let i = index">
       <strong>{{ i }}.év: </strong>
