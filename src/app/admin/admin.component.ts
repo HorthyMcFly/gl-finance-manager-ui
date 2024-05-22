@@ -11,6 +11,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { PeriodService } from '../period/period.service';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { ConfirmDialogComponent } from '../dialog/confirm-dialog.component';
 
 @Component({
   selector: 'glfm-admin',
@@ -24,6 +26,7 @@ import { PeriodService } from '../period/period.service';
     MatFormFieldModule,
     MatInputModule,
     MatCheckboxModule,
+    MatDialogModule,
   ],
   providers: [AdminService],
   templateUrl: './admin.component.html',
@@ -79,25 +82,32 @@ export class AdminComponent {
   addNewMode$ = this.#addNewMode$.pipe(tap(() => this.addNewForm.reset()));
 
   #underEditId$ = new BehaviorSubject<number | null>(null);
-  editMode$ = this.#underEditId$.pipe(switchMap((underEditId) => {
-    return this.adminService.users$.pipe(map((users) => {
-      const user = users.find((user) => user.id === underEditId);
-      if (user) {
-        this.editForm.patchValue(
-          {
-            id: user.id,
-            username: user.username,
-            admin: user.admin,
-            active: user.active,
-            resetPassword: false,
+  editMode$ = this.#underEditId$.pipe(
+    switchMap((underEditId) => {
+      return this.adminService.users$.pipe(
+        map((users) => {
+          const user = users.find((user) => user.id === underEditId);
+          if (user) {
+            this.editForm.patchValue({
+              id: user.id,
+              username: user.username,
+              admin: user.admin,
+              active: user.active,
+              resetPassword: false,
+            });
           }
-        );
-      }
-      return underEditId !== null;
-    }))
-  }));
+          return underEditId !== null;
+        })
+      );
+    })
+  );
 
-  constructor(public adminService: AdminService, public periodService: PeriodService, private formBuilder: FormBuilder) {}
+  constructor(
+    public adminService: AdminService,
+    public periodService: PeriodService,
+    private formBuilder: FormBuilder,
+    private dialog: MatDialog
+  ) {}
 
   setAddNewMode(addNewMode: boolean) {
     this.#addNewMode$.next(addNewMode);
@@ -142,8 +152,18 @@ export class AdminComponent {
   }
 
   closeActivePeriod() {
-    this.adminService.closeActivePeriod().subscribe(() => {
-      this.periodService.loadActivePeriod();
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      data: {
+        title: 'Megerősítés',
+        message: 'Biztosan lezárja a periódust?',
+      },
+    });
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.adminService.closeActivePeriod().subscribe(() => {
+          this.periodService.loadActivePeriod();
+        });
+      }
     });
   }
 }
