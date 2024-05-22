@@ -6,9 +6,11 @@
     <mat-card-content class="m-3">
       <form [formGroup]="loginForm" (ngSubmit)="login()" class="flex flex-col justify-center">
         <mat-form-field>
+          <mat-label>Felhasználónév</mat-label>
           <input matInput formControlName="username" />
         </mat-form-field>
         <mat-form-field>
+          <mat-label>Jelszó</mat-label>
           <input matInput type="password" formControlName="password" />
         </mat-form-field>
         <button mat-raised-button type="submit" color="primary" class="mx-auto w-32">Bejelentkezés</button>

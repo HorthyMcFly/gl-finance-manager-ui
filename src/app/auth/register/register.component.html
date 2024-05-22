@@ -6,14 +6,19 @@
     <mat-card-content class="m-3">
       <form [formGroup]="registerForm" (ngSubmit)="register()" class="flex flex-col justify-center">
         <mat-form-field>
+          <mat-label>Felhasználónév</mat-label>
           <input matInput formControlName="username" />
         </mat-form-field>
         <mat-form-field>
+          <mat-label>Jelszó</mat-label>
           <input matInput type="password" formControlName="password" />
         </mat-form-field>
         <mat-form-field>
+          <mat-label>Jelszó ismét</mat-label>
           <input matInput type="password" formControlName="confirmPassword" />
-          <mat-error>{{ confirmPasswordErrorMessage$ | async }}</mat-error>
+          <mat-error *ngIf="registerForm.controls.confirmPassword.errors?.['passwordMismatch']">
+            Nem egyező jelszavak!
+          </mat-error>
         </mat-form-field>
         <button mat-raised-button type="submit" color="primary" class="mx-auto w-32">Regisztráció</button>
       </form>

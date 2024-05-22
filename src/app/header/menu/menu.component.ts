@@ -41,6 +41,11 @@ export class MenuComponent {
       label: 'Hitelek',
       icon: 'account_balance',
     },
+    {
+      path: 'change-password',
+      label: 'Jelszó megváltoztatása',
+      icon: 'password',
+    },
   ];
 
   private _adminMenuItems: MenuItem[] = [

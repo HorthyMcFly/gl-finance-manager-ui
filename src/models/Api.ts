@@ -140,15 +140,7 @@ export interface FmUser {
 }
 
 export interface RegisterRequest {
-  /**
-   * User name
-   * @example "username"
-   */
   username: string;
-  /**
-   * Password
-   * @example "password"
-   */
   password: string;
 }
 
@@ -165,6 +157,10 @@ export interface LoginResponse {
   role: string;
   /** JWT access token */
   accessToken: string;
+}
+
+export interface ChangePasswordRequest {
+  newPassword: string;
 }
 
 export interface AssetInvestmentBalanceDto {

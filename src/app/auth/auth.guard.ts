@@ -3,8 +3,8 @@ import { CanActivateFn, Router, UrlTree } from '@angular/router';
 import { Observable, map } from 'rxjs';
 import { AuthService } from './auth.service';
 
-const USER_ROUTES = ['dashboard', 'incomeexpense', 'asset', 'loan'];
-const ADMIN_ROUTES = ['dashboard', 'admin', 'incomeexpense', 'asset', 'loan'];
+const USER_ROUTES = ['dashboard', 'incomeexpense', 'asset', 'loan', 'change-password'];
+const ADMIN_ROUTES = ['dashboard', 'admin', 'incomeexpense', 'asset', 'loan', 'change-password'];
 
 export const authGuard: CanActivateFn = (route, state): Observable<boolean | UrlTree> => {
   const authService = inject(AuthService);

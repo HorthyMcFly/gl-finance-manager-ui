@@ -14,7 +14,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { Router } from '@angular/router';
 import { AuthService } from '../auth.service';
-import { Observable, first, map, startWith, switchMap } from 'rxjs';
+import { first, switchMap } from 'rxjs';
 
 @Component({
   selector: 'glfm-register',
@@ -42,20 +42,11 @@ export class RegisterComponent implements OnInit {
     { validators: this.passwordMatchValidator }
   );
 
-  confirmPasswordErrorMessage$!: Observable<string | null>;
-
   constructor(public router: Router, private authService: AuthService, private formBuilder: FormBuilder) {}
 
   ngOnInit(): void {
     const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser') ?? 'null');
     if (loggedInUser) this.router.navigate(['dashboard']);
-
-    this.confirmPasswordErrorMessage$ = this.registerForm.valueChanges.pipe(
-      startWith(this.registerForm.value),
-      map(() => {
-        return this.registerForm.controls.confirmPassword.hasError('passwordMismatch') ? 'Nem egyező jelszavak!' : null;
-      })
-    );
   }
 
   register(): void {

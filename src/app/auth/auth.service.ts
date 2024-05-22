@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, shareReplay, tap } from 'rxjs';
-import { LoginResponse, RegisterRequest } from '../../models/Api';
+import { LoginResponse, RegisterRequest, ChangePasswordRequest } from '../../models/Api';
 
 @Injectable({
   providedIn: 'root',
@@ -38,5 +38,9 @@ export class AuthService {
 
   setLoggedInUser(loggedInUser: LoginResponse | null): void {
     this._loggedInUser$.next(loggedInUser);
+  }
+
+  changePassword(newPassword: string): Observable<never> {
+    return this.http.post<never>('/api/auth/change-password', { newPassword } as ChangePasswordRequest);
   }
 }
