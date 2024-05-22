@@ -58,6 +58,7 @@ export interface IncomeDto {
    * @maxLength 100
    */
   comment: string | null;
+  editable: boolean;
 }
 
 export interface ExpenseCategory {
@@ -88,6 +89,7 @@ export interface ExpenseDto {
    * @maxLength 100
    */
   comment: string | null;
+  editable: boolean;
   relatedLoanName: string | null;
 }
 

@@ -69,6 +69,7 @@ export class ExpenseComponent implements OnInit {
       Validators.maxLength(this.VALIDATION_VALUES.comment.MAX_LENGTH),
     ]),
     relatedLoanName: this.formBuilder.control(null as null | string),
+    editable: this.formBuilder.nonNullable.control(true),
   });
 
   #formValueExpense$ = new BehaviorSubject<ExpenseDto | null>(null);
@@ -107,6 +108,7 @@ export class ExpenseComponent implements OnInit {
       expenseCategory: this.expenseCategories[0],
       comment: null,
       relatedLoanName: null,
+      editable: true,
     });
   }
 
@@ -143,6 +145,7 @@ export class ExpenseComponent implements OnInit {
       expenseCategory: formValue.expenseCategory!,
       comment: formValue.comment,
       relatedLoanName: formValue.relatedLoanName,
+      editable: formValue.editable,
     };
 
     if (saveObject.id === null) {

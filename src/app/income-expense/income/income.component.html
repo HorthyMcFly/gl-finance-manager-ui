@@ -74,7 +74,7 @@
               type="button"
               mat-raised-button
               color="primary"
-              [disabled]="incomeExpenseService.buttonsDisabled$ | async"
+              [disabled]="(incomeExpenseService.buttonsDisabled$ | async) || !element.editable"
               (click)="modifyIncome(element)"
             >
               Szerkesztés
@@ -83,7 +83,7 @@
               type="button"
               mat-raised-button
               color="warn"
-              [disabled]="incomeExpenseService.buttonsDisabled$ | async"
+              [disabled]="(incomeExpenseService.buttonsDisabled$ | async) || !element.editable"
               (click)="deleteIncome(element.id)"
             >
               Törlés

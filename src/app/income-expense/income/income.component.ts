@@ -65,6 +65,7 @@ export class IncomeComponent {
     comment: this.formBuilder.control(null as string | null, [
       Validators.maxLength(this.VALIDATION_VALUES.comment.MAX_LENGTH),
     ]),
+    editable: this.formBuilder.nonNullable.control(true),
   });
 
   #formValueIncome$ = new BehaviorSubject<IncomeDto | null>(null);
@@ -93,6 +94,7 @@ export class IncomeComponent {
       amount: 0,
       source: '',
       comment: null,
+      editable: true,
     });
   }
 
@@ -127,6 +129,7 @@ export class IncomeComponent {
       amount: formValue.amount!,
       source: formValue.source!,
       comment: formValue.comment,
+      editable: true,
     };
 
     if (saveObject.id === null) {
