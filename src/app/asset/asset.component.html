@@ -131,7 +131,7 @@
           <mat-error *ngIf="addAssetForm.controls.interestRate.errors?.['min']"
             >Minimum {{ VALIDATION_VALUES.interestRate.MIN | number : '1.0-2' }}!</mat-error
           >
-          <mat-error *ngIf="addAssetForm.controls.amount.errors?.['max']"
+          <mat-error *ngIf="addAssetForm.controls.interestRate.errors?.['max']"
             >Maximum {{ VALIDATION_VALUES.interestRate.MAX | number : '1.0-2' }}!</mat-error
           >
         </mat-form-field>
