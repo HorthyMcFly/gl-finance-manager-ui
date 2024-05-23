@@ -22,6 +22,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { BalanceService } from '../balance/balance.service';
 import { PeriodService } from '../period/period.service';
+import { InvestmentSimulationComponent } from './investment-simulation/investment-simulation.component';
 
 type AssetSourceType = 'INVESTMENT_BALANCE' | 'NEW';
 interface AssetSource {
@@ -43,6 +44,7 @@ interface AssetSource {
     MatNativeDateModule,
     MatSelectModule,
     MatDatepickerModule,
+    InvestmentSimulationComponent,
   ],
   providers: [AssetService],
   host: { class: 'glfm-asset' },

@@ -1,0 +1,101 @@
+<mat-accordion>
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+      <span class="text-lg">Befektetés szimuláció</span>
+    </mat-expansion-panel-header>
+    <form [formGroup]="simulationForm" (ngSubmit)="calculate()">
+      <mat-form-field class="w-full">
+        <mat-label>Kalkuláció típusa</mat-label>
+        <mat-select formControlName="calculationType">
+          <mat-option *ngFor="let type of CALCULATION_TYPES" [value]="type">{{ type.displayName }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <div class="w-full flex justify-between gap-2">
+        <mat-form-field>
+          <mat-label>Kezdőtőke</mat-label>
+          <input type="number" matInput formControlName="startingAmount" />
+          <mat-error *ngIf="simulationForm.controls.startingAmount.errors?.['required']"
+            >Kezdőtőke megadása kötelező!</mat-error
+          >
+          <mat-error *ngIf="simulationForm.controls.startingAmount.errors?.['min']"
+            >Minimum {{ VALIDATION_VALUES.startingAmount.MIN | number : '1.0-2' }}!</mat-error
+          >
+          <mat-error *ngIf="simulationForm.controls.startingAmount.errors?.['max']"
+            >Maximum {{ VALIDATION_VALUES.startingAmount.MAX | number : '1.0-2' }}!</mat-error
+          >
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>Átlagos éves kamat</mat-label>
+          <input type="number" matInput formControlName="interestRate" />
+          <mat-error *ngIf="simulationForm.controls.interestRate.errors?.['required']"
+            >Kamat megadása kötelező!</mat-error
+          >
+          <mat-error *ngIf="simulationForm.controls.interestRate.errors?.['min']"
+            >Minimum {{ VALIDATION_VALUES.interestRate.MIN | number : '1.0-2' }}!</mat-error
+          >
+          <mat-error *ngIf="simulationForm.controls.interestRate.errors?.['max']"
+            >Maximum {{ VALIDATION_VALUES.interestRate.MAX | number : '1.0-2' }}!</mat-error
+          >
+          <span matTextSuffix>%</span>
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>Hónapok száma</mat-label>
+          <input type="number" matInput formControlName="numberOfMonths" />
+          <mat-error *ngIf="simulationForm.controls.numberOfMonths.errors?.['required']"
+            >Hónapok megadása kötelező!</mat-error
+          >
+          <mat-error *ngIf="simulationForm.controls.numberOfMonths.errors?.['min']"
+            >Minimum {{ VALIDATION_VALUES.numberOfMonths.MIN | number : '1.0-2' }}!</mat-error
+          >
+          <mat-error *ngIf="simulationForm.controls.numberOfMonths.errors?.['max']"
+            >Maximum {{ VALIDATION_VALUES.numberOfMonths.MAX | number : '1.0-2' }}!</mat-error
+          >
+        </mat-form-field>
+        <mat-form-field *ngIf="simulationForm.controls.monthlySavings.enabled">
+          <mat-label>Havi megtakarítás</mat-label>
+          <input type="number" matInput formControlName="monthlySavings" />
+          <mat-error *ngIf="simulationForm.controls.monthlySavings.errors?.['required']"
+            >Megtakarítás megadása kötelező!</mat-error
+          >
+          <mat-error *ngIf="simulationForm.controls.monthlySavings.errors?.['min']"
+            >Minimum {{ VALIDATION_VALUES.monthlySavings.MIN | number : '1.0-2' }}!</mat-error
+          >
+          <mat-error *ngIf="simulationForm.controls.monthlySavings.errors?.['max']"
+            >Maximum {{ VALIDATION_VALUES.monthlySavings.MAX | number : '1.0-2' }}!</mat-error
+          >
+        </mat-form-field>
+        <mat-form-field *ngIf="simulationForm.controls.goalAmount.enabled">
+          <mat-label>Célősszeg</mat-label>
+          <input type="number" matInput formControlName="goalAmount" />
+          <mat-error *ngIf="simulationForm.controls.goalAmount.errors?.['required']"
+            >Célösszeg megadása kötelező!</mat-error
+          >
+          <mat-error *ngIf="simulationForm.controls.goalAmount.errors?.['min']"
+            >Minimum {{ simulationForm.controls.startingAmount.value | number : '1.0-2' }}!</mat-error
+          >
+        </mat-form-field>
+      </div>
+      <div class="flex justify-center">
+        <button type="submit" mat-raised-button color="primary">
+          Szimuláció
+        </button>
+      </div>
+    </form>
+    <div *ngIf="calculationResult$ | async as calculationResult">
+      <div class="text-lg font-semibold mb-2">Éves egyenlegek:</div>
+      <div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6">
+        <div *ngFor="let balanceByYear of calculationResult.balanceByYear; let i = index">
+          <strong>{{ i + 1 }}.év: </strong>
+          <span>{{ balanceByYear | currency : 'HUF' }}</span>
+        </div>
+      </div>
+      <div class="mt-2">
+        <ng-container [ngSwitch]="simulationForm.controls.calculationType.value.type">
+          <strong *ngSwitchCase="'MONTHLY_SAVINGS'">Szükséges havi megtakarítás:</strong>
+          <strong *ngSwitchCase="'END_AMOUNT'">Végösszeg:</strong>
+        </ng-container>
+        <span class="ms-1">{{ calculationResult.result | currency : 'HUF' }}</span>
+      </div>
+    </div>
+  </mat-expansion-panel>
+</mat-accordion>
