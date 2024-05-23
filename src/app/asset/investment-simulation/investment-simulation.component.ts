@@ -122,6 +122,8 @@ export class InvestmentSimulationComponent implements OnInit, OnDestroy {
   }
 
   calculate() {
+    if (!this.simulationForm.valid) return;
+
     const formValue = this.simulationForm.getRawValue();
     let calculationResult: CalculationResult | null = null;
     switch (formValue.calculationType.type) {
