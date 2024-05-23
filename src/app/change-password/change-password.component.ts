@@ -1,7 +1,7 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../auth/auth.service';
-import { AbstractControl, FormBuilder, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -16,29 +16,38 @@ import { Router } from '@angular/router';
   styleUrls: ['./change-password.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ChangePasswordComponent {
+export class ChangePasswordComponent implements OnInit {
+  VALIDATION_VALUES = {
+    password: {
+      MIN_LENGTH: 8,
+      MAX_LENGTH: 30,
+    },
+  };
+
   changePasswordForm = this.formBuilder.group(
     {
-      newPassword: this.formBuilder.control(null as string | null, Validators.required),
-      confirmPassword: this.formBuilder.control(null as string | null, Validators.required),
-    },
-    { validators: this.passwordMatchValidator }
+      newPassword: this.formBuilder.control(null as string | null, [
+        Validators.required,
+        Validators.minLength(this.VALIDATION_VALUES.password.MIN_LENGTH),
+        Validators.maxLength(this.VALIDATION_VALUES.password.MAX_LENGTH),
+      ]),
+      confirmPassword: this.formBuilder.control(null as string | null),
+    }
   );
 
   constructor(private authService: AuthService, private formBuilder: FormBuilder, private router: Router) {}
 
-  passwordMatchValidator(control: AbstractControl): ValidationErrors | null {
-    const formGroup = control as typeof this.changePasswordForm;
-    const password = formGroup.controls.newPassword;
-    const confirmPassword = formGroup.controls.confirmPassword;
+  ngOnInit() {
+    this.changePasswordForm.controls.confirmPassword.addValidators([
+      Validators.required,
+      this.passwordMatchValidator(this.changePasswordForm.controls.newPassword),
+    ]);
+  }
 
-    if (password && confirmPassword && password.value !== confirmPassword.value) {
-      confirmPassword.setErrors({ passwordMismatch: true });
-      return { passwordMismatch: true };
-    } else {
-      confirmPassword.setErrors(null);
-      return null;
-    }
+  passwordMatchValidator(passwordControl: AbstractControl): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      return passwordControl.value !== control.value ? { passwordMismatch: true } : null;
+    };
   }
 
   changePassword() {

@@ -1,5 +1,5 @@
 <div class="flex items-center h-full">
-  <mat-card class="w-64 mx-auto">
+  <mat-card class="w-96 mx-auto">
     <mat-card-header class="justify-center">
       <mat-card-title>Regisztráció</mat-card-title>
     </mat-card-header>
@@ -8,10 +8,24 @@
         <mat-form-field>
           <mat-label>Felhasználónév</mat-label>
           <input matInput formControlName="username" />
+          <mat-error *ngIf="registerForm.controls.username.errors?.['required']">Felhasználónév megadása kötelező!</mat-error>
+          <mat-error *ngIf="registerForm.controls.username.errors?.['minlength']"
+            >Minimum {{ VALIDATION_VALUES.username.MIN_LENGTH }} karakter!</mat-error
+          >
+          <mat-error *ngIf="registerForm.controls.username.errors?.['maxlength']"
+            >Maximum {{ VALIDATION_VALUES.username.MAX_LENGTH }} karakter!</mat-error
+          >
         </mat-form-field>
         <mat-form-field>
           <mat-label>Jelszó</mat-label>
           <input matInput type="password" formControlName="password" />
+          <mat-error *ngIf="registerForm.controls.password.errors?.['required']">Jelszó megadása kötelező!</mat-error>
+          <mat-error *ngIf="registerForm.controls.password.errors?.['minlength']"
+            >Minimum {{ VALIDATION_VALUES.password.MIN_LENGTH }} karakter!</mat-error
+          >
+          <mat-error *ngIf="registerForm.controls.password.errors?.['maxlength']"
+            >Maximum {{ VALIDATION_VALUES.password.MAX_LENGTH }} karakter!</mat-error
+          >
         </mat-form-field>
         <mat-form-field>
           <mat-label>Jelszó ismét</mat-label>

@@ -7,6 +7,7 @@ import {
   FormsModule,
   ReactiveFormsModule,
   ValidationErrors,
+  ValidatorFn,
   Validators,
 } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -33,20 +34,40 @@ import { first, switchMap } from 'rxjs';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RegisterComponent implements OnInit {
-  registerForm = this.formBuilder.group(
-    {
-      username: this.formBuilder.control(null as string | null, Validators.required),
-      password: this.formBuilder.control(null as string | null, Validators.required),
-      confirmPassword: this.formBuilder.control(null as string | null, Validators.required),
+  VALIDATION_VALUES = {
+    username: {
+      MIN_LENGTH: 5,
+      MAX_LENGTH: 20,
     },
-    { validators: this.passwordMatchValidator }
-  );
+    password: {
+      MIN_LENGTH: 8,
+      MAX_LENGTH: 30,
+    },
+  };
+
+  registerForm = this.formBuilder.group({
+    username: this.formBuilder.control(null as string | null, [
+      Validators.required,
+      Validators.minLength(this.VALIDATION_VALUES.username.MIN_LENGTH),
+      Validators.maxLength(this.VALIDATION_VALUES.username.MAX_LENGTH),
+    ]),
+    password: this.formBuilder.control(null as string | null, [
+      Validators.required,
+      Validators.minLength(this.VALIDATION_VALUES.password.MIN_LENGTH),
+      Validators.maxLength(this.VALIDATION_VALUES.password.MAX_LENGTH),
+    ]),
+    confirmPassword: this.formBuilder.control(null as string | null),
+  });
 
   constructor(public router: Router, private authService: AuthService, private formBuilder: FormBuilder) {}
 
   ngOnInit(): void {
     const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser') ?? 'null');
     if (loggedInUser) this.router.navigate(['dashboard']);
+    this.registerForm.controls.confirmPassword.addValidators([
+      Validators.required,
+      this.passwordMatchValidator(this.registerForm.controls.password),
+    ]);
   }
 
   register(): void {
@@ -67,17 +88,9 @@ export class RegisterComponent implements OnInit {
     }
   }
 
-  passwordMatchValidator(control: AbstractControl): ValidationErrors | null {
-    const formGroup = control as typeof this.registerForm;
-    const password = formGroup.controls.password;
-    const confirmPassword = formGroup.controls.confirmPassword;
-
-    if (password && confirmPassword && password.value !== confirmPassword.value) {
-      confirmPassword.setErrors({ passwordMismatch: true });
-      return { passwordMismatch: true };
-    } else {
-      confirmPassword.setErrors(null);
-      return null;
-    }
+  passwordMatchValidator(passwordControl: AbstractControl): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      return passwordControl.value !== control.value ? { passwordMismatch: true } : null;
+    };
   }
 }
