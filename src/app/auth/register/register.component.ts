@@ -16,6 +16,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { Router } from '@angular/router';
 import { AuthService } from '../auth.service';
 import { first, switchMap } from 'rxjs';
+import { AlertmDialogComponent } from '../../dialog/alert-dialog.component';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 
 @Component({
   selector: 'glfm-register',
@@ -28,6 +30,7 @@ import { first, switchMap } from 'rxjs';
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
+    MatDialogModule,
   ],
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.scss'],
@@ -59,7 +62,12 @@ export class RegisterComponent implements OnInit {
     confirmPassword: this.formBuilder.control(null as string | null),
   });
 
-  constructor(public router: Router, private authService: AuthService, private formBuilder: FormBuilder) {}
+  constructor(
+    public router: Router,
+    private authService: AuthService,
+    private dialog: MatDialog,
+    private formBuilder: FormBuilder
+  ) {}
 
   ngOnInit(): void {
     const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser') ?? 'null');
@@ -81,9 +89,20 @@ export class RegisterComponent implements OnInit {
           }),
           first()
         )
-        .subscribe((loginResponse) => {
-          this.authService.setLoggedInUser(loginResponse);
-          this.router.navigate(['dashboard']);
+        .subscribe({
+          next: (loginResponse) => {
+            this.authService.setLoggedInUser(loginResponse);
+            this.router.navigate(['dashboard']);
+          },
+          error: (error) => {
+            const message = error.status === 409 ? 'Már létezik ilyen névvel felhasználó.' : 'Háttérrendszeri hiba.';
+            this.dialog.open(AlertmDialogComponent, {
+              data: {
+                title: 'Hiba!',
+                message: message,
+              },
+            });
+          },
         });
     }
   }
@@ -92,5 +111,9 @@ export class RegisterComponent implements OnInit {
     return (control: AbstractControl): ValidationErrors | null => {
       return passwordControl.value !== control.value ? { passwordMismatch: true } : null;
     };
+  }
+
+  back() {
+    this.router.navigate(['login']);
   }
 }

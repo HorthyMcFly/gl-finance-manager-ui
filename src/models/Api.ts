@@ -133,18 +133,22 @@ export interface AssetType {
 export interface FmUser {
   /** @format int32 */
   id?: number;
-  /**
-   * @minLength 5
-   * @maxLength 20
-   */
-  username?: string;
+  username: string;
   password?: string;
   admin?: boolean;
   active?: boolean;
 }
 
 export interface RegisterRequest {
+  /**
+   * @minLength 5
+   * @maxLength 20
+   */
   username: string;
+  /**
+   * @minLength 8
+   * @maxLength 30
+   */
   password: string;
 }
 
@@ -164,6 +168,10 @@ export interface LoginResponse {
 }
 
 export interface ChangePasswordRequest {
+  /**
+   * @minLength 8
+   * @maxLength 30
+   */
   newPassword: string;
 }
 
