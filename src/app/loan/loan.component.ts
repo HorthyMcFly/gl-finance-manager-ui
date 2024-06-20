@@ -4,7 +4,14 @@ import { LoanService } from './loan.service';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { LoanDetailsComponent } from './loan-details/loan-details.component';
 import { MatCardModule } from '@angular/material/card';
-import { AbstractControl, FormBuilder, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  FormBuilder,
+  ReactiveFormsModule,
+  ValidationErrors,
+  ValidatorFn,
+  Validators,
+} from '@angular/forms';
 import { BehaviorSubject, map, tap } from 'rxjs';
 import { LoanDto } from '../../models/Api';
 import { MatButtonModule } from '@angular/material/button';
@@ -12,6 +19,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { DeleteDialogComponent } from '../dialog/delete-dialog.component';
+import { PeriodService } from '../period/period.service';
 
 @Component({
   selector: 'glfm-loan',
@@ -91,7 +99,12 @@ export class LoanComponent implements OnInit {
     map((formValueLoan) => formValueLoan !== null)
   );
 
-  constructor(public loanService: LoanService, private dialog: MatDialog, private formBuilder: FormBuilder) {}
+  constructor(
+    public loanService: LoanService,
+    public periodService: PeriodService,
+    private dialog: MatDialog,
+    private formBuilder: FormBuilder
+  ) {}
 
   ngOnInit() {
     this.loanForm.controls.monthlyRepayment.setValidators([
@@ -163,7 +176,7 @@ export class LoanComponent implements OnInit {
       const amountControlValue = amountControl.value;
       const monthlyRepaymentControlValue = control.value;
       if (amountControlValue !== null && monthlyRepaymentControlValue !== null) {
-        return monthlyRepaymentControlValue > amountControlValue  ? { monthlyRepaymentMax: true } : null;
+        return monthlyRepaymentControlValue > amountControlValue ? { monthlyRepaymentMax: true } : null;
       }
       return null;
     };
