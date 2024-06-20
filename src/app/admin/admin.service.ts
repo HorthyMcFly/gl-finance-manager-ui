@@ -31,6 +31,10 @@ export class AdminService {
     this.#users$.next(users.map((u) => (u.id === user.id ? user : u)));
   }
 
+  createFirstPeriod() {
+    return this.http.post('api/admin/create-first-period', {});
+  }
+
   closeActivePeriod() {
     return this.http.post('api/admin/close-active-period', {});
   }

@@ -151,6 +151,12 @@ export class AdminComponent {
     });
   }
 
+  createFirstPeriod() {
+    this.adminService.createFirstPeriod().subscribe(() => {
+      this.periodService.loadActivePeriod();
+    });
+  }
+
   closeActivePeriod() {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       data: {

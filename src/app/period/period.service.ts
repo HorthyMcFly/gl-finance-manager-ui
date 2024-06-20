@@ -11,7 +11,7 @@ export class PeriodService {
 
   #loadActivePeriod$ = new BehaviorSubject<void>(undefined);
   activePeriod$ = this.#loadActivePeriod$.pipe(
-    switchMap(() => this.http.get<FmPeriod>('api/periods/active').pipe(first())),
+    switchMap(() => this.http.get<FmPeriod | null>('api/periods/active').pipe(first())),
     shareReplay({ bufferSize: 1, refCount: true })
   );
 

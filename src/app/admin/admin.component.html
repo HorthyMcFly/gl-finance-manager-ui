@@ -1,15 +1,25 @@
 <div class="m-5">
   <h1>Adminisztrátor funkciók</h1>
-  <mat-card class="mb-2">
+  <mat-card *ngIf="periodService.activePeriod$ | async as activePeriod" class="mb-2">
     <mat-card-header>
       <h2>Aktív periódus zárása</h2>
     </mat-card-header>
     <mat-card-content>
       <div class="flex justify-center mb-2">
-        <span>Aktív periódus: {{ (periodService.activePeriod$ | async)?.name }}</span>
+        <span>Aktív periódus: {{ activePeriod.name }}</span>
       </div>
       <div class="flex justify-center">
         <button mat-raised-button type="button" color="accent" (click)="closeActivePeriod()">Periódus zárása</button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+  <mat-card *ngIf="!(periodService.activePeriod$ | async)" class="mb-2">
+    <mat-card-header>
+      <h2>Első periódus létrehozása</h2>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="flex justify-center">
+        <button mat-raised-button type="button" color="accent" (click)="createFirstPeriod()">Periódus létrehozása</button>
       </div>
     </mat-card-content>
   </mat-card>
