@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { AdminService } from './admin.service';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { BehaviorSubject, Observable, map, startWith, switchMap, tap } from 'rxjs';
-import { FmUser } from '../../models/Api';
+import { FmUserDto } from '../../models/Api';
 import { MatCardModule } from '@angular/material/card';
 import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
@@ -62,7 +62,7 @@ export class AdminComponent {
     resetPassword: this.formBuilder.nonNullable.control(false),
   });
 
-  dataSource$: Observable<FmUser[]> = this.adminService.users$.pipe(
+  dataSource$: Observable<FmUserDto[]> = this.adminService.users$.pipe(
     tap(() => this.searchForm.reset()),
     switchMap((users) => {
       return this.searchForm.valueChanges.pipe(
@@ -118,7 +118,7 @@ export class AdminComponent {
       return;
     }
     const formValue = this.addNewForm.getRawValue();
-    const newUser: FmUser = {
+    const newUser: FmUserDto = {
       username: formValue.username,
       admin: formValue.admin,
       active: true,
@@ -138,12 +138,12 @@ export class AdminComponent {
       return;
     }
     const formValue = this.editForm.getRawValue();
-    const user: FmUser = {
+    const user: FmUserDto = {
       id: formValue.id!,
       username: formValue.username,
-      password: formValue.resetPassword ? 'reset' : '',
       admin: formValue.admin,
       active: formValue.active,
+      resetPassword: formValue.resetPassword,
     };
     this.adminService.modifyUser(user).subscribe(() => {
       this.adminService.updateUser(user);

@@ -130,13 +130,17 @@ export interface AssetType {
   displayName?: string;
 }
 
-export interface FmUser {
+export interface FmUserDto {
   /** @format int32 */
   id?: number;
+  /**
+   * @minLength 5
+   * @maxLength 20
+   */
   username: string;
-  password?: string;
-  admin?: boolean;
-  active?: boolean;
+  admin: boolean;
+  active: boolean;
+  resetPassword?: boolean;
 }
 
 export interface RegisterRequest {
