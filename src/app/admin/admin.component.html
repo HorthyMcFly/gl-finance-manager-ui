@@ -100,8 +100,9 @@
         <ng-container matColumnDef="edit">
           <th mat-header-cell *matHeaderCellDef></th>
           <td mat-cell *matCellDef="let element">
-            <div class="flex justify-center">
+            <div class="flex justify-end">
               <button
+                *ngIf="(authService.loggedInUser$ | async)?.username !== element.username"
                 mat-raised-button
                 color="primary"
                 (click)="setUnderEditId(element.id)"

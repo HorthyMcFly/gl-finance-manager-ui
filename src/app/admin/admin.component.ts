@@ -13,6 +13,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { PeriodService } from '../period/period.service';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from '../dialog/confirm-dialog.component';
+import { AuthService } from '../auth/auth.service';
 
 @Component({
   selector: 'glfm-admin',
@@ -104,6 +105,7 @@ export class AdminComponent {
 
   constructor(
     public adminService: AdminService,
+    public authService: AuthService,
     public periodService: PeriodService,
     private formBuilder: FormBuilder,
     private dialog: MatDialog
