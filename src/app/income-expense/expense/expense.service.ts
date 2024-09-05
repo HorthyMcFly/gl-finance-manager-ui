@@ -16,7 +16,7 @@ export class ExpenseService {
     switchMap(() => this.#expenses.pipe(map((expenses) => expenses ?? [])))
   );
 
-  expenseCategories$ = this.http.get<ExpenseCategory[]>('api/expenses/expense-categories').pipe(
+  expenseCategories$ = this.http.get<ExpenseCategory[]>('api/expense-categories').pipe(
     shareReplay({ bufferSize: 1, refCount: true})
   );
 

@@ -200,6 +200,19 @@ export interface FmPeriod {
   active?: boolean;
 }
 
+export interface ExpenseCategoryLimitDto {
+  /** @format int32 */
+  id: number | null;
+  expenseCategory: ExpenseCategory;
+  /**
+   * @min 1
+   * @exclusiveMin false
+   * @max 100000000000000000
+   * @exclusiveMax false
+   */
+  expenseLimit: number;
+}
+
 export interface AssetSummary {
   totalAssetValue?: number;
 }
