@@ -14,6 +14,7 @@ import { BehaviorSubject, first, map, tap } from 'rxjs';
 import { ExpenseCategory, ExpenseDto } from '../../../models/Api';
 import { DeleteDialogComponent } from '../../dialog/delete-dialog.component';
 import { MatSelectModule } from '@angular/material/select';
+import { ExpenseCategoryLimitComponent } from './expense-category-limit/expense-category-limit.component';
 
 @Component({
   selector: 'glfm-expense',
@@ -29,6 +30,7 @@ import { MatSelectModule } from '@angular/material/select';
     MatDialogModule,
     DeleteDialogComponent,
     MatSelectModule,
+    ExpenseCategoryLimitComponent,
   ],
   providers: [ExpenseService],
   templateUrl: './expense.component.html',

@@ -1,0 +1,15 @@
+<div>
+  <h2>Kiadás kategória limitek</h2>
+  <div class="grid grid-cols-6 gap-2">
+    <mat-card
+      *ngFor="let expenseCategoryLimit of expenseCategoryLimitsWithCurrentSpending$ | async"
+      [ngClass]="expenseCategoryLimit.overSpent ? '!bg-[#f44336]' : ''"
+    >
+      <mat-card-content>
+        <div><strong>{{ expenseCategoryLimit.expenseCategory.displayName }}</strong></div>
+        <div>Limit: {{ expenseCategoryLimit.expenseLimit | number : '1.0-2' }}</div>
+        <div>Havi költés: {{ expenseCategoryLimit.currentSpending | number : '1.0-2' }}</div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>
