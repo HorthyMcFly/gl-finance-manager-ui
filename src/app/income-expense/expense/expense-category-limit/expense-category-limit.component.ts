@@ -3,12 +3,28 @@ import { CommonModule } from '@angular/common';
 import { ExpenseService } from '../expense.service';
 import { MatCardModule } from '@angular/material/card';
 import { ExpenseCategoryLimitService } from './expense-category-limit.service';
-import { combineLatest, map } from 'rxjs';
+import { BehaviorSubject, combineLatest, map, tap } from 'rxjs';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ExpenseCategory, ExpenseCategoryLimitDto } from '../../../../models/Api';
+import { IncomeExpenseService } from '../../income-expense.service';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'glfm-expense-category-limit',
   standalone: true,
-  imports: [CommonModule, MatCardModule],
+  imports: [
+    CommonModule,
+    MatCardModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatButtonModule,
+  ],
+  providers: [ExpenseCategoryLimitService],
   templateUrl: './expense-category-limit.component.html',
   styleUrls: ['./expense-category-limit.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -33,8 +49,73 @@ export class ExpenseCategoryLimitComponent {
     })
   );
 
+  availableExpenseCategories$ = combineLatest([
+    this.expenseService.expenseCategories$,
+    this.expenseCategoryLimitService.expenseCategoryLimits$,
+  ]).pipe(
+    map(([expenseCategories, expenseCategoryLimits]) => {
+      return expenseCategories.filter(
+        (expenseCategory) =>
+          !expenseCategoryLimits.some(
+            (expenseCategoryLimit) => expenseCategoryLimit.expenseCategory.id === expenseCategory.id
+          )
+      );
+    })
+  );
+
+  VALIDATION_VALUES = {
+    expenseLimit: {
+      MIN: 0,
+      MAX: 1_000_000_000,
+    },
+  };
+
+  expenseCategoryLimitForm = this.formBuilder.group({
+    id: this.formBuilder.control(null as number | null),
+    expenseCategory: this.formBuilder.control(null as ExpenseCategory | null, Validators.required),
+    expenseLimit: this.formBuilder.control(null as number | null, [
+      Validators.min(this.VALIDATION_VALUES.expenseLimit.MIN),
+      Validators.max(this.VALIDATION_VALUES.expenseLimit.MAX),
+    ]),
+  });
+
+  #formValueExpenseCategoryLimit$ = new BehaviorSubject<ExpenseCategoryLimitDto | null>(null);
+  formVisible$ = this.#formValueExpenseCategoryLimit$.pipe(
+    tap((formValueExpenseCategoryLimit) => {
+      this.expenseCategoryLimitForm.reset();
+      if (formValueExpenseCategoryLimit?.id) {
+        this.expenseCategoryLimitForm.setValue(formValueExpenseCategoryLimit);
+      }
+      this.incomeExpenseService.underEdit$.next(formValueExpenseCategoryLimit !== null);
+    }),
+    map((formValueExpenseCategoryLimit) => formValueExpenseCategoryLimit !== null)
+  );
+
   constructor(
     public expenseCategoryLimitService: ExpenseCategoryLimitService,
-    private expenseService: ExpenseService
+    public incomeExpenseService: IncomeExpenseService,
+    private expenseService: ExpenseService,
+    private formBuilder: FormBuilder
   ) {}
+
+  addNew() {
+    this.#formValueExpenseCategoryLimit$.next({
+      id: null,
+      expenseCategory: {},
+      expenseLimit: 0,
+    });
+  }
+
+  modifyExpenseCategoryLimit(expenseCategoryLimit: ExpenseCategoryLimitDto) {
+    // TODO: fix type
+    this.#formValueExpenseCategoryLimit$.next(expenseCategoryLimit);
+  }
+
+  cancelForm() {
+    this.#formValueExpenseCategoryLimit$.next(null);
+  }
+
+  createOrModifyExpenseCategoryLimit() {
+    // TODO
+  }
 }

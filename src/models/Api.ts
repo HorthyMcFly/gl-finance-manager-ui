@@ -93,6 +93,19 @@ export interface ExpenseDto {
   relatedLoanName: string | null;
 }
 
+export interface ExpenseCategoryLimitDto {
+  /** @format int32 */
+  id: number | null;
+  expenseCategory: ExpenseCategory;
+  /**
+   * @min 1
+   * @exclusiveMin false
+   * @max 100000000000000000
+   * @exclusiveMax false
+   */
+  expenseLimit: number;
+}
+
 export interface AssetDto {
   /** @format int32 */
   id: number | null;
@@ -198,19 +211,6 @@ export interface FmPeriod {
   /** @format date */
   endDate?: string;
   active?: boolean;
-}
-
-export interface ExpenseCategoryLimitDto {
-  /** @format int32 */
-  id: number | null;
-  expenseCategory: ExpenseCategory;
-  /**
-   * @min 1
-   * @exclusiveMin false
-   * @max 100000000000000000
-   * @exclusiveMax false
-   */
-  expenseLimit: number;
 }
 
 export interface AssetSummary {
