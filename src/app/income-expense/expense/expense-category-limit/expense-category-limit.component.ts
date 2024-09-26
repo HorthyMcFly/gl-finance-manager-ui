@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ExpenseService } from '../expense.service';
 import { MatCardModule } from '@angular/material/card';
 import { ExpenseCategoryLimitService } from './expense-category-limit.service';
-import { BehaviorSubject, combineLatest, map, tap } from 'rxjs';
+import { BehaviorSubject, combineLatest, map, Observable, tap } from 'rxjs';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ExpenseCategory, ExpenseCategoryLimitDto } from '../../../../models/Api';
 import { IncomeExpenseService } from '../../income-expense.service';
@@ -11,6 +11,14 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
+
+interface ExpenseCategoryLimitWithCurrentSpending {
+  id: number | null;
+  expenseCategory: ExpenseCategory;
+  expenseLimit: number | null;
+  currentSpending: number;
+  overSpent: boolean;
+}
 
 @Component({
   selector: 'glfm-expense-category-limit',
@@ -30,7 +38,7 @@ import { MatButtonModule } from '@angular/material/button';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ExpenseCategoryLimitComponent {
-  expenseCategoryLimitsWithCurrentSpending$ = combineLatest([
+  expenseCategoryLimitsWithCurrentSpending$: Observable<ExpenseCategoryLimitWithCurrentSpending[]> = combineLatest([
     this.expenseCategoryLimitService.expenseCategoryLimits$,
     this.expenseService.expenses$,
   ]).pipe(
@@ -39,7 +47,7 @@ export class ExpenseCategoryLimitComponent {
         const currentSpending = expenses
           .filter((expense) => expense.expenseCategory.id === expenseCategoryLimit.expenseCategory.id)
           .reduce((acc, expense) => acc + expense.amount, 0);
-        const overSpent = currentSpending > expenseCategoryLimit.expenseLimit;
+        const overSpent = currentSpending > expenseCategoryLimit.expenseLimit!;
         return {
           ...expenseCategoryLimit,
           currentSpending,
@@ -106,8 +114,12 @@ export class ExpenseCategoryLimitComponent {
     });
   }
 
-  modifyExpenseCategoryLimit(expenseCategoryLimit: ExpenseCategoryLimitDto) {
-    // TODO: fix type
+  modifyExpenseCategoryLimit(expenseCategoryLimitWithCurrentSpending: ExpenseCategoryLimitWithCurrentSpending) {
+    const expenseCategoryLimit = {
+      id: expenseCategoryLimitWithCurrentSpending.id,
+      expenseCategory: expenseCategoryLimitWithCurrentSpending.expenseCategory,
+      expenseLimit: expenseCategoryLimitWithCurrentSpending.expenseLimit,
+    };
     this.#formValueExpenseCategoryLimit$.next(expenseCategoryLimit);
   }
 
@@ -116,6 +128,27 @@ export class ExpenseCategoryLimitComponent {
   }
 
   createOrModifyExpenseCategoryLimit() {
-    // TODO
+    if (this.expenseCategoryLimitForm.invalid) return;
+
+    const expenseCategoryLimit = this.expenseCategoryLimitForm.getRawValue();
+    const saveObject = { ...expenseCategoryLimit, expenseCategory: expenseCategoryLimit.expenseCategory ?? {} };
+    if (expenseCategoryLimit.id === null) {
+      this.expenseCategoryLimitService.createExpenseCategoryLimit(saveObject).subscribe((savedExpenseCategoryLimit) => {
+        this.expenseCategoryLimitService.addExpenseCategoryLimit(savedExpenseCategoryLimit);
+        this.cancelForm();
+      });
+    } else {
+      if (expenseCategoryLimit.expenseLimit && expenseCategoryLimit.expenseLimit > 1) {
+        this.expenseCategoryLimitService.modifyExpenseCategoryLimit(saveObject).subscribe((savedExpenseCategoryLimit) => {
+          this.expenseCategoryLimitService.updateExpenseCategoryLimit(savedExpenseCategoryLimit);
+          this.cancelForm();
+        });
+      } else {
+        this.expenseCategoryLimitService.deleteExpenseCategoryLimit(expenseCategoryLimit.id).subscribe(() => {
+          this.expenseCategoryLimitService.removeExpenseCategoryLimit(expenseCategoryLimit.id!);
+          this.cancelForm();
+        });
+      }
+    }
   }
 }

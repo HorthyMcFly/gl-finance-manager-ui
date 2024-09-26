@@ -103,7 +103,7 @@ export interface ExpenseCategoryLimitDto {
    * @max 100000000000000000
    * @exclusiveMax false
    */
-  expenseLimit: number;
+  expenseLimit: number | null;
 }
 
 export interface AssetDto {

@@ -17,7 +17,7 @@
       (ngSubmit)="createOrModifyExpenseCategoryLimit()"
       class="flex items-center gap-2 w-full"
     >
-      <mat-form-field>
+      <mat-form-field *ngIf="expenseCategoryLimitForm.controls.id.value === null">
         <mat-label>Kategória</mat-label>
         <mat-select formControlName="expenseCategory">
           <mat-option *ngFor="let expenseCategory of availableExpenseCategories$ | async" [value]="expenseCategory">{{
@@ -28,6 +28,9 @@
           >Kategória megadása kötelező!</mat-error
         >
       </mat-form-field>
+      <div *ngIf="expenseCategoryLimitForm.controls.id.value !== null">
+        <strong>{{ expenseCategoryLimitForm.controls.expenseCategory.value?.displayName }}</strong>
+      </div>
       <mat-form-field class="me-auto">
         <mat-label>Limit</mat-label>
         <input matInput formControlName="expenseLimit" />
@@ -45,7 +48,7 @@
       <button mat-raised-button (click)="cancelForm()" type="button">Mégsem</button>
     </form>
   </div>
-  <div class="grid grid-cols-6 gap-2">
+  <div class="grid auto-rows-fr grid-cols-2 lg:grid-cols-6 gap-2">
     <mat-card
       *ngFor="let expenseCategoryLimit of expenseCategoryLimitsWithCurrentSpending$ | async"
       [ngClass]="expenseCategoryLimit.overSpent ? '!bg-[#f44336]' : ''"
@@ -56,7 +59,7 @@
         </div>
         <div>Limit: {{ expenseCategoryLimit.expenseLimit | number : '1.0-2' }}</div>
         <div>Havi költés: {{ expenseCategoryLimit.currentSpending | number : '1.0-2' }}</div>
-        <div class="text-center mt-2">
+        <div class="flex justify-center items-center mt-2">
           <button
             mat-raised-button
             color="primary"
