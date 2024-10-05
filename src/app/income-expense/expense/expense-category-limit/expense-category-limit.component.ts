@@ -1,10 +1,10 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ExpenseService } from '../expense.service';
 import { MatCardModule } from '@angular/material/card';
 import { ExpenseCategoryLimitService } from './expense-category-limit.service';
 import { BehaviorSubject, combineLatest, map, Observable, tap } from 'rxjs';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule, ValidatorFn, Validators } from '@angular/forms';
 import { ExpenseCategory, ExpenseCategoryLimitDto } from '../../../../models/Api';
 import { IncomeExpenseService } from '../../income-expense.service';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -37,7 +37,7 @@ interface ExpenseCategoryLimitWithCurrentSpending {
   styleUrls: ['./expense-category-limit.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ExpenseCategoryLimitComponent {
+export class ExpenseCategoryLimitComponent implements OnInit {
   expenseCategoryLimitsWithCurrentSpending$: Observable<ExpenseCategoryLimitWithCurrentSpending[]> = combineLatest([
     this.expenseCategoryLimitService.expenseCategoryLimits$,
     this.expenseService.expenses$,
@@ -106,6 +106,18 @@ export class ExpenseCategoryLimitComponent {
     private formBuilder: FormBuilder
   ) {}
 
+  ngOnInit() {
+    this.expenseCategoryLimitForm.controls.expenseLimit.addValidators(this.requiredIfNew());
+  }
+
+  requiredIfNew(): ValidatorFn {
+    return (control) => {
+      return this.expenseCategoryLimitForm.controls.id.value === null
+        ? Validators.required(control)
+        : Validators.nullValidator(control);
+    };
+  }
+
   addNew() {
     this.#formValueExpenseCategoryLimit$.next({
       id: null,
@@ -139,10 +151,12 @@ export class ExpenseCategoryLimitComponent {
       });
     } else {
       if (expenseCategoryLimit.expenseLimit && expenseCategoryLimit.expenseLimit > 1) {
-        this.expenseCategoryLimitService.modifyExpenseCategoryLimit(saveObject).subscribe((savedExpenseCategoryLimit) => {
-          this.expenseCategoryLimitService.updateExpenseCategoryLimit(savedExpenseCategoryLimit);
-          this.cancelForm();
-        });
+        this.expenseCategoryLimitService
+          .modifyExpenseCategoryLimit(saveObject)
+          .subscribe((savedExpenseCategoryLimit) => {
+            this.expenseCategoryLimitService.updateExpenseCategoryLimit(savedExpenseCategoryLimit);
+            this.cancelForm();
+          });
       } else {
         this.expenseCategoryLimitService.deleteExpenseCategoryLimit(expenseCategoryLimit.id).subscribe(() => {
           this.expenseCategoryLimitService.removeExpenseCategoryLimit(expenseCategoryLimit.id!);
