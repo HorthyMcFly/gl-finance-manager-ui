@@ -135,7 +135,7 @@
             >Maximum {{ VALIDATION_VALUES.interestRate.MAX | number : '1.0-2' }}!</mat-error
           >
         </mat-form-field>
-        <mat-form-field *ngIf="addAssetForm.controls.interestPaymentMonth.enabled">
+        <mat-form-field *ngIf="addAssetForm.controls.assetType.value?.type === 'BOND'">
           <mat-label>Kamatfizetés hónapja</mat-label>
           <mat-select formControlName="interestPaymentMonth">
             <mat-option *ngFor="let month of MONTH_LIST; let i = index" [value]="i">{{ month }}</mat-option>

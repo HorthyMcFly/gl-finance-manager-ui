@@ -44,7 +44,7 @@
         </mat-form-field>
         <mat-form-field>
           <mat-label>Kategória</mat-label>
-          <mat-select formControlName="expenseCategory">
+          <mat-select formControlName="expenseCategory" [compareWith]="compareExpenseCategories">
             <mat-option *ngFor="let expenseCategory of expenseCategories" [value]="expenseCategory">{{
               expenseCategory.displayName
             }}</mat-option>

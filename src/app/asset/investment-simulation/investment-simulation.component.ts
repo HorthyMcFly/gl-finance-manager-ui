@@ -106,6 +106,7 @@ export class InvestmentSimulationComponent implements OnInit, OnDestroy {
     this.simulationForm.controls.calculationType.valueChanges
       .pipe(startWith(this.simulationForm.controls.calculationType.value), takeUntil(this.destroyed$))
       .subscribe((calculationType) => {
+        this.calculationResult$.next(null);
         this.simulationForm.controls.monthlySavings.reset();
         this.simulationForm.controls.goalAmount.reset();
         switch (calculationType.type) {

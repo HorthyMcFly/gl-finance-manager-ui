@@ -15,27 +15,27 @@
     <button mat-raised-button color="primary" [disabled]="loanService.underEdit$ | async" (click)="editLoan.emit(loan)">
       Szerkesztés
     </button>
-    <button
-      mat-raised-button
-      color="warn"
-      [disabled]="loanService.underEdit$ | async"
-      (click)="deleteLoan.emit(loan)"
-    >
+    <button mat-raised-button color="warn" [disabled]="loanService.underEdit$ | async" (click)="deleteLoan.emit(loan)">
       Törlés
     </button>
   </div>
 </div>
 
-<div *ngIf="loanRundown">
-  <div class="text-lg font-semibold mb-2">Hitel lefutása a hátralévő időszakra:</div>
-  <div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6">
-    <div *ngFor="let outstandingByYear of loanRundown.outstandingByYear; let i = index">
-      <strong>{{ i }}.év: </strong>
-      <span>{{ outstandingByYear | currency : 'HUF' }}</span>
+<div *ngIf="loanRundown$ | async as loanRundown">
+  <div *ngIf="loanRundown.feasible">
+    <div class="text-lg font-semibold mb-2">Hitel lefutása a hátralévő időszakra:</div>
+    <div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6">
+      <div *ngFor="let outstandingByYear of loanRundown.outstandingByYear; let i = index">
+        <strong>{{ i }}.év: </strong>
+        <span>{{ outstandingByYear | currency : 'HUF' }}</span>
+      </div>
+    </div>
+    <div class="mt-2">
+      <strong>Teljes visszafizetendő összeg: </strong>
+      <span>{{ loanRundown.totalAmountRepaid | currency : 'HUF' }}</span>
     </div>
   </div>
-  <div class="mt-2">
-    <strong>Teljes visszafizetendő összeg: </strong>
-    <span>{{ loanRundown.totalAmountRepaid | currency : 'HUF' }}</span>
+  <div *ngIf="!loanRundown.feasible" class="my-2">
+    <strong>A megadott paraméterekkel a hitel visszafizetése lehetetlen! Módosítson a paramétereken!</strong>
   </div>
 </div>

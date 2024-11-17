@@ -167,4 +167,8 @@ export class ExpenseComponent implements OnInit {
     this.#formValueExpense$.next(null);
     this.balanceService.reloadBalance();
   }
+
+  compareExpenseCategories(category1: ExpenseCategory, category2: ExpenseCategory) {
+    return category1.category === category2.category;
+  }
 }
