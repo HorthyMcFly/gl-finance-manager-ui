@@ -14,6 +14,13 @@ RUN ng build --configuration=production
 
 FROM nginx:latest
 
+RUN apt-get update && apt-get install -y locales && rm -rf /var/lib/apt/lists/*
+
+RUN locale-gen hu_HU.UTF-8
+ENV LANG hu_HU.UTF-8
+ENV LANGUAGE hu_HU:hu
+ENV LC_ALL hu_HU.UTF-8
+
 COPY --from=build app/dist/gl-finance-manager-ui /usr/share/nginx/html
 
 EXPOSE 80
