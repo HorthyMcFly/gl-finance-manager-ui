@@ -42,6 +42,8 @@ export class AuthService {
   }
 
   changePassword(newPassword: string): Observable<never> {
-    return this.http.post<never>('/api/auth/change-password', { newPassword } as ChangePasswordRequest);
+    return this.http.post<never>(`${environment.apiUrl}/auth/change-password`, {
+      newPassword,
+    } as ChangePasswordRequest);
   }
 }

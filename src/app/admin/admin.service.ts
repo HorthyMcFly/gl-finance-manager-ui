@@ -2,11 +2,12 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, map, shareReplay, switchMap, tap } from 'rxjs';
 import { FmUserDto } from '../../models/Api';
+import { environment } from '../../environments/environment';
 
 @Injectable()
 export class AdminService {
   #users$ = new BehaviorSubject<FmUserDto[] | null>(null);
-  users$ = this.http.get<FmUserDto[]>('api/admin/users').pipe(
+  users$ = this.http.get<FmUserDto[]>(`${environment.apiUrl}/admin/users`).pipe(
     tap((users) => this.#users$.next(users)),
     shareReplay({ bufferSize: 1, refCount: true }),
     switchMap(() => this.#users$.pipe(map((users) => (users ? users : []))))
@@ -15,7 +16,7 @@ export class AdminService {
   constructor(private http: HttpClient) {}
 
   createUser(user: FmUserDto) {
-    return this.http.post<FmUserDto>('api/admin/user', user);
+    return this.http.post<FmUserDto>(`${environment.apiUrl}/admin/user`, user);
   }
 
   addUser(user: FmUserDto) {
@@ -23,7 +24,7 @@ export class AdminService {
   }
 
   modifyUser(user: FmUserDto) {
-    return this.http.put<FmUserDto>('api/admin/user', user);
+    return this.http.put<FmUserDto>(`${environment.apiUrl}/admin/user`, user);
   }
 
   updateUser(user: FmUserDto) {
@@ -32,11 +33,11 @@ export class AdminService {
   }
 
   createFirstPeriod() {
-    return this.http.post('api/admin/create-first-period', {});
+    return this.http.post(`${environment.apiUrl}/admin/create-first-period`, {});
   }
 
   closeActivePeriod() {
-    return this.http.post('api/admin/close-active-period', {});
+    return this.http.post(`${environment.apiUrl}/admin/close-active-period`, {});
   }
   
 }

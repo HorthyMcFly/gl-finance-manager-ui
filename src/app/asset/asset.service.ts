@@ -2,22 +2,23 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, map, shareReplay, switchMap, tap } from 'rxjs';
 import { AssetDto, AssetInvestmentBalanceDto, AssetType } from '../../models/Api';
+import { environment } from '../../environments/environment';
 
 @Injectable()
 export class AssetService {
   #assets = new BehaviorSubject(null as AssetDto[] | null);
-  assets$ = this.http.get<AssetDto[]>('/api/assets').pipe(
+  assets$ = this.http.get<AssetDto[]>(`${environment.apiUrl}/assets`).pipe(
     tap((assets) => this.#assets.next(assets)),
     shareReplay({ bufferSize: 1, refCount: true }),
     switchMap(() => this.#assets.pipe(map((assets) => assets ?? [])))
   );
 
-  assetTypes$ = this.http.get<AssetType[]>('api/assets/asset-types');
+  assetTypes$ = this.http.get<AssetType[]>(`${environment.apiUrl}/assets/asset-types`);
 
   constructor(private http: HttpClient) {}
 
   createAsset(assetDto: AssetDto) {
-    return this.http.post<AssetDto>('api/assets', assetDto);
+    return this.http.post<AssetDto>(`${environment.apiUrl}/assets`, assetDto);
   }
 
   addAsset(assetDto: AssetDto) {
@@ -25,7 +26,7 @@ export class AssetService {
   }
 
   sellAsset(assetDto: AssetDto) {
-    return this.http.put<AssetDto>('api/assets/sell', assetDto);
+    return this.http.put<AssetDto>(`${environment.apiUrl}/assets/sell`, assetDto);
   }
 
   updateAsset(assetDto: AssetDto) {
@@ -40,7 +41,7 @@ export class AssetService {
   }
 
   deleteAsset(assetId: number) {
-    return this.http.delete<void>(`api/assets/${assetId}`);
+    return this.http.delete<void>(`${environment.apiUrl}/assets/${assetId}`);
   }
 
   removeAsset(assetId: number) {
@@ -48,6 +49,8 @@ export class AssetService {
   }
 
   investmentBalanceToIncome(amount: number) {
-    return this.http.post<void>('api/assets/investment-balance-to-income', { amount } as AssetInvestmentBalanceDto);
+    return this.http.post<void>(`${environment.apiUrl}/assets/investment-balance-to-income`, {
+      amount,
+    } as AssetInvestmentBalanceDto);
   }
 }

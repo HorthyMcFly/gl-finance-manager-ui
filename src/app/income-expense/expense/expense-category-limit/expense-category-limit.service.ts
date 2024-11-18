@@ -2,11 +2,12 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, shareReplay, switchMap, tap } from 'rxjs';
 import { ExpenseCategoryLimitDto } from '../../../../models/Api';
+import { environment } from '../../../../environments/environment';
 
 @Injectable()
 export class ExpenseCategoryLimitService {
   #expenseCategoryLimits$ = new BehaviorSubject<ExpenseCategoryLimitDto[]>([]);
-  expenseCategoryLimits$ = this.http.get<ExpenseCategoryLimitDto[]>('api/expense-categories/limits').pipe(
+  expenseCategoryLimits$ = this.http.get<ExpenseCategoryLimitDto[]>(`${environment.apiUrl}/expense-categories/limits`).pipe(
     tap((expenseCategoryLimits) => this.#expenseCategoryLimits$.next(expenseCategoryLimits)),
     shareReplay({ bufferSize: 1, refCount: true }),
     switchMap(() => this.#expenseCategoryLimits$)
@@ -15,7 +16,7 @@ export class ExpenseCategoryLimitService {
   constructor(private http: HttpClient) {}
 
   createExpenseCategoryLimit(expenseCategoryLimitDto: ExpenseCategoryLimitDto) {
-    return this.http.post<ExpenseCategoryLimitDto>('api/expense-categories/limits', expenseCategoryLimitDto);
+    return this.http.post<ExpenseCategoryLimitDto>(`${environment.apiUrl}/expense-categories/limits`, expenseCategoryLimitDto);
   }
 
   addExpenseCategoryLimit(expenseCategoryLimitDto: ExpenseCategoryLimitDto) {
@@ -23,7 +24,7 @@ export class ExpenseCategoryLimitService {
   }
 
   modifyExpenseCategoryLimit(expenseCategoryLimitDto: ExpenseCategoryLimitDto) {
-    return this.http.put<ExpenseCategoryLimitDto>('api/expense-categories/limits', expenseCategoryLimitDto);
+    return this.http.put<ExpenseCategoryLimitDto>(`${environment.apiUrl}/expense-categories/limits`, expenseCategoryLimitDto);
   }
 
   updateExpenseCategoryLimit(expenseCategoryLimitDto: ExpenseCategoryLimitDto) {
@@ -38,7 +39,7 @@ export class ExpenseCategoryLimitService {
   }
 
   deleteExpenseCategoryLimit(expenseCategoryLimitId: number) {
-    return this.http.delete<void>(`api/expense-categories/limits/${expenseCategoryLimitId}`);
+    return this.http.delete<void>(`${environment.apiUrl}/expense-categories/limits/${expenseCategoryLimitId}`);
   }
 
   removeExpenseCategoryLimit(expenseCategoryLimitId: number) {

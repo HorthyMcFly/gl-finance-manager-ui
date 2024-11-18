@@ -3,13 +3,14 @@ import { BehaviorSubject, filter, map, shareReplay, switchMap, tap } from 'rxjs'
 import { IncomeDto } from '../../../models/Api';
 import { HttpClient } from '@angular/common/http';
 import { IncomeExpenseService } from '../income-expense.service';
+import { environment } from '../../../environments/environment';
 
 @Injectable()
 export class IncomeService {
   #incomes = new BehaviorSubject(null as IncomeDto[] | null);
   incomes$ = this.incomeExpenseService.selectedPeriod$.pipe(
     filter((selectedPeriod) => selectedPeriod !== null),
-    switchMap((selectedPeriod) => this.http.get<IncomeDto[]>(`/api/incomes/own/periods/${selectedPeriod!.id}`)),
+    switchMap((selectedPeriod) => this.http.get<IncomeDto[]>(`${environment.apiUrl}/incomes/own/periods/${selectedPeriod!.id}`)),
     tap((incomes) => this.#incomes.next(incomes)),
     shareReplay({ bufferSize: 1, refCount: true }),
     switchMap(() => this.#incomes.pipe(map((incomes) => incomes ?? [])))
@@ -18,15 +19,15 @@ export class IncomeService {
   constructor(private http: HttpClient, private incomeExpenseService: IncomeExpenseService) {}
 
   createIncome(incomeDto: IncomeDto) {
-    return this.http.post<IncomeDto>('api/incomes', incomeDto);
+    return this.http.post<IncomeDto>(`${environment.apiUrl}/incomes`, incomeDto);
   }
 
   modifyIncome(incomeDto: IncomeDto) {
-    return this.http.put<IncomeDto>('api/incomes', incomeDto);
+    return this.http.put<IncomeDto>(`${environment.apiUrl}/incomes`, incomeDto);
   }
 
   deleteIncome(incomeId: number) {
-    return this.http.delete(`api/incomes/${incomeId}`);
+    return this.http.delete(`${environment.apiUrl}/incomes/${incomeId}`);
   }
 
   addIncome(incomeDto: IncomeDto) {
