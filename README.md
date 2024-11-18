@@ -29,5 +29,11 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 ## Docker build
 docker build -t gl-finance-manager-ui .
 
+## Docker save
+docker save -o gl-finance-manager-ui.tar gl-finance-manager-ui
+
+## Docker load
+docker load -i gl-finance-manager-ui.tar
+
 ## Docker start
 docker run -d -p 4200:80 gl-finance-manager-ui
