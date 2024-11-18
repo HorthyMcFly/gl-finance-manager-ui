@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, shareReplay, tap } from 'rxjs';
 import { LoginResponse, RegisterRequest, ChangePasswordRequest } from '../../models/Api';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -29,11 +30,11 @@ export class AuthService {
         Authorization: 'Basic ' + window.btoa(username + ':' + password),
       },
     };
-    return this.http.post<LoginResponse>('/api/auth/login', null, httpOptions);
+    return this.http.post<LoginResponse>(`${environment.apiUrl}/auth/login`, null, httpOptions);
   }
 
   register(username: string, password: string): Observable<never> {
-    return this.http.post<never>('/api/auth/register', { username, password } as RegisterRequest);
+    return this.http.post<never>(`${environment.apiUrl}/auth/register`, { username, password } as RegisterRequest);
   }
 
   setLoggedInUser(loggedInUser: LoginResponse | null): void {
