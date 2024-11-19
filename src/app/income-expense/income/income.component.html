@@ -22,7 +22,7 @@
       >
         <mat-form-field>
           <mat-label>Összeg</mat-label>
-          <input matInput formControlName="amount" />
+          <input type="number" matInput formControlName="amount" />
           <mat-error *ngIf="incomeForm.controls.amount.errors?.['required']">Összeg megadása kötelező!</mat-error>
           <mat-error *ngIf="incomeForm.controls.amount.errors?.['min']"
             >Minimum {{ VALIDATION_VALUES.amount.MIN | number : '1.0-2' }}!</mat-error

@@ -180,7 +180,7 @@ export class AssetComponent implements OnInit {
       name: formValue.name,
       useInvestmentBalance: formValue.source.type === 'INVESTMENT_BALANCE',
       assetType: formValue.assetType!,
-      maturityDate: formValue.maturityDate!.toLocaleDateString().replaceAll(' ', '-').replaceAll('.', ''),
+      maturityDate: formValue.maturityDate!.toISOString().split('T')[0],
       interestRate: formValue.interestRate!,
       interestPaymentMonth: formValue.interestPaymentMonth,
     };
