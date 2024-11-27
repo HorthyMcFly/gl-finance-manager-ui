@@ -169,6 +169,6 @@ export class ExpenseComponent implements OnInit {
   }
 
   compareExpenseCategories(category1: ExpenseCategory, category2: ExpenseCategory) {
-    return category1.category === category2.category;
+    return category1?.category === category2?.category;
   }
 }
